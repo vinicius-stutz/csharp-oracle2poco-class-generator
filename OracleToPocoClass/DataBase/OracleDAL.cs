@@ -9,6 +9,60 @@ namespace OracleToPocoClass.DataBase
 {
     class OracleDAL
     {
+
+        public static string GetDataType(string DBDATASCALE, string DBDATAPRECISION, string DBDATATYPE, string DBREQUIRED)
+        {
+            string tp = string.Empty;
+            short prec = 0;
+            short scale = 0;
+
+            if (DBDATAPRECISION != null)
+                if (!string.IsNullOrEmpty(DBDATAPRECISION))
+                    prec = Convert.ToInt16(DBDATAPRECISION);
+
+            if (DBDATASCALE != null)
+                if (!string.IsNullOrEmpty(DBDATASCALE))
+                    scale = Convert.ToInt16((DBDATASCALE));
+
+            switch (DBDATATYPE)
+            {
+                case "NUMBER":
+                    if (prec <= 3) tp = "byte";
+                    else if (prec <= 5) tp = "short";
+                    else if (prec <= 10) tp = "int";
+                    else if ((prec <= 19) && (scale == 0)) tp = "long";
+                    else if ((prec <= 18) && (scale <= 2)) tp = "decimal";
+                    if (DBREQUIRED != "X") tp += "?";
+                    break;
+                case "BLOB": tp = "byte[]"; break;
+                case "BINARY_FLOAT":
+                    tp = "single";
+                    if (DBREQUIRED != "X") tp += "?";
+                    break;
+                case "BINARY_DOUBLE":
+                    tp = "double";
+                    if (DBREQUIRED != "X") tp += "?";
+                    break;
+                case "RAW": tp = "Guid"; break;
+                case "DATE":
+                    tp = "DateTime";
+                    if (DBREQUIRED != "X") tp += "?";
+                    break;
+                case "NCLOB": tp = "String"; break;
+                case "CLOB": tp = "String"; break;
+                case "NVARCHAR2": tp = "string"; break;
+                case "VARCHAR2": tp = "string"; break;
+                case "NCHAR": tp = "string"; break;
+                case "CHAR": tp = "string"; break;
+                case "LONG": tp = "string"; break;
+                case "ROWID": tp = "string"; break;
+                case "UROWID": tp = "string"; break;
+                default: tp = "object"; break;
+            }
+            return tp;
+        }
+
+
         public static ICollection<string> GetTables()
         {
             string sql = "SELECT TABLE_NAME FROM USER_TABLES ORDER BY TABLE_NAME";
@@ -47,7 +101,7 @@ namespace OracleToPocoClass.DataBase
             try
             {
                 string sql =
-                    @"SELECT DECODE(UCC.COLUMN_NAME, NULL, NULL, 'X') AS DBKEY,
+                                    @"SELECT DECODE(UCC.COLUMN_NAME, NULL, NULL, 'X') AS DBKEY,
                              TC.COLUMN_NAME AS DBCOLUMN,
                              DECODE(TC.NULLABLE, 'N', 'X', 'Y', NULL) AS DBREQUIRED,
                              {0}
@@ -59,8 +113,20 @@ namespace OracleToPocoClass.DataBase
                              TC.DATA_TYPE AS DBDATATYPE,
                              TC.DATA_PRECISION AS DBDATAPRECISION,
                              TC.DATA_SCALE AS DBDATASCALE,
-                             TC.DATA_LENGTH AS DBDATALENGTH
+                             TC.DATA_LENGTH AS DBDATALENGTH,
+                             TABLEFK.TABLE_PK
                     FROM USER_TAB_COLUMNS TC
+                    LEFT JOIN (SELECT CC.COLUMN_NAME, CC.TABLE_NAME, TR.TABLE_PK 
+                                  FROM ALL_CONS_COLUMNS CC 
+                                    INNER JOIN ALL_TAB_COLUMNS ATC ON CC.TABLE_NAME = ATC.TABLE_NAME AND ATC.COLUMN_NAME = CC.COLUMN_NAME
+                                    INNER JOIN (SELECT C.CONSTRAINT_NAME, C2.TABLE_NAME TABLE_PK
+                                                                FROM ALL_CONSTRAINTS C
+                                                                  INNER JOIN ALL_CONSTRAINTS C2 ON C2.CONSTRAINT_NAME  = C.R_CONSTRAINT_NAME 
+                                                              WHERE C.TABLE_NAME = :P_TABLE 
+                                                                AND C2.status = 'ENABLED'                                
+                                                                AND C.status = 'ENABLED'
+                                                  ) TR ON CC.CONSTRAINT_NAME = TR.CONSTRAINT_NAME) TABLEFK
+                         ON (TC.TABLE_NAME = TABLEFK.TABLE_NAME AND TC.COLUMN_NAME = TABLEFK.COLUMN_NAME)       
                     LEFT JOIN USER_COL_COMMENTS CC ON CC.COLUMN_NAME = TC.COLUMN_NAME AND CC.TABLE_NAME = TC.TABLE_NAME
                     LEFT JOIN USER_CONSTRAINTS UC ON UC.TABLE_NAME = TC.TABLE_NAME AND UC.CONSTRAINT_TYPE = 'P'
                     LEFT JOIN USER_CONS_COLUMNS UCC ON UCC.TABLE_NAME = UC.TABLE_NAME AND UCC.CONSTRAINT_NAME = UC.CONSTRAINT_NAME AND UCC.COLUMN_NAME = TC.COLUMN_NAME
@@ -119,26 +185,26 @@ namespace OracleToPocoClass.DataBase
                             sb.AppendLine("        // TODO: Você pode apagar estas linhas de comentários se desejar (classe " + StringUtil.ToPascalCase(table.ToString()) + ")");
                             sb.AppendLine("        /*");
                             sb.AppendLine("         * ----------------------- EXEMPLOS -----------------------");
-                            sb.AppendLine("         * Levando em consideração o seguinte cenário:");
-                            sb.AppendLine("         * - Classe Employee;");
-                            sb.AppendLine("         * - Classe DepartmentMaster.");
-                            sb.AppendLine("         * ");
-                            sb.AppendLine("         * --------------------------------------------------------");
-                            sb.AppendLine("         * ");
-                            sb.AppendLine("         * 1) FOREIGN KEY");
-                            sb.AppendLine("         * Se houver chave estrangeira use (na classe Employee):");
-                            sb.AppendLine("         *      [ForeignKey(\"DepartmentMaster\")]");
-                            sb.AppendLine("         *      public int DepartmentId { get; set; }");
-                            sb.AppendLine("         *      public virtual DepartmentMaster DepartmentMaster { get; set; }");
-                            sb.AppendLine("         *      ");
-                            sb.AppendLine("         * Já encontrei outros exemplos que utilizam:");
-                            sb.AppendLine("         *      public int DepartmentId { get; set; }");
-                            sb.AppendLine("         *      [ForeignKey(\"DepartmentId\")]");
-                            sb.AppendLine("         *      public DepartmentMaster DepartmentMaster { get; set; }");
-                            sb.AppendLine("         * ");
-                            sb.AppendLine("         * Fique à vontade para utilizar a solução que melhor atende suas necessidades.");
-                            sb.AppendLine("         * ");
-                            sb.AppendLine("         * --------------------------------------------------------");
+                            //sb.AppendLine("         * Levando em consideração o seguinte cenário:");
+                            //sb.AppendLine("         * - Classe Employee;");
+                            //sb.AppendLine("         * - Classe DepartmentMaster.");
+                            //sb.AppendLine("         * ");
+                            //sb.AppendLine("         * --------------------------------------------------------");
+                            //sb.AppendLine("         * ");
+                            //sb.AppendLine("         * 1) FOREIGN KEY");
+                            //sb.AppendLine("         * Se houver chave estrangeira use (na classe Employee):");
+                            //sb.AppendLine("         *      [ForeignKey(\"DepartmentMaster\")]");
+                            //sb.AppendLine("         *      public int DepartmentId { get; set; }");
+                            //sb.AppendLine("         *      public virtual DepartmentMaster DepartmentMaster { get; set; }");
+                            //sb.AppendLine("         *      ");
+                            //sb.AppendLine("         * Já encontrei outros exemplos que utilizam:");
+                            //sb.AppendLine("         *      public int DepartmentId { get; set; }");
+                            //sb.AppendLine("         *      [ForeignKey(\"DepartmentId\")]");
+                            //sb.AppendLine("         *      public DepartmentMaster DepartmentMaster { get; set; }");
+                            //sb.AppendLine("         * ");
+                            //sb.AppendLine("         * Fique à vontade para utilizar a solução que melhor atende suas necessidades.");
+                            //sb.AppendLine("         * ");
+                            //sb.AppendLine("         * --------------------------------------------------------");
                             sb.AppendLine("         * ");
                             sb.AppendLine("         * 2) INVERSE PROPERTY");
                             sb.AppendLine("         * Se na Classe Employee houver:");
@@ -208,49 +274,9 @@ namespace OracleToPocoClass.DataBase
 
                         while (dr.Read())
                         {
-                            if (dr["DBDATAPRECISION"] != null)
-                                if (!string.IsNullOrEmpty(dr["DBDATAPRECISION"].ToString()))
-                                    prec = Convert.ToInt16(dr["DBDATAPRECISION"].ToString());
-
-                            if (dr["DBDATASCALE"] != null)
-                                if (!string.IsNullOrEmpty(dr["DBDATASCALE"].ToString()))
-                                    scale = Convert.ToInt16((dr["DBDATASCALE"].ToString()));
-
-                            switch (dr["DBDATATYPE"].ToString())
-                            {
-                                case "NUMBER":
-                                    if (prec <= 3) tp = "byte";
-                                    else if (prec <= 5) tp = "short";
-                                    else if (prec <= 10) tp = "int";
-                                    else if ((prec <= 19) && (scale == 0)) tp = "long";
-                                    else if ((prec <= 18) && (scale <= 2)) tp = "decimal";
-                                    if (dr["DBREQUIRED"].ToString() != "X") tp += "?";
-                                    break;
-                                case "BLOB": tp = "byte[]"; break;
-                                case "BINARY_FLOAT":
-                                    tp = "single";
-                                    if (dr["DBREQUIRED"].ToString() != "X") tp += "?";
-                                    break;
-                                case "BINARY_DOUBLE":
-                                    tp = "double";
-                                    if (dr["DBREQUIRED"].ToString() != "X") tp += "?";
-                                    break;
-                                case "RAW": tp = "Guid"; break;
-                                case "DATE":
-                                    tp = "DateTime";
-                                    if (dr["DBREQUIRED"].ToString() != "X") tp += "?";
-                                    break;
-                                case "NCLOB": tp = "String"; break;
-                                case "CLOB": tp = "String"; break;
-                                case "NVARCHAR2": tp = "string"; break;
-                                case "VARCHAR2": tp = "string"; break;
-                                case "NCHAR": tp = "string"; break;
-                                case "CHAR": tp = "string"; break;
-                                case "LONG": tp = "string"; break;
-                                case "ROWID": tp = "string"; break;
-                                case "UROWID": tp = "string"; break;
-                                default: tp = "object"; break;
-                            }
+                            //Obtendo o tipo de dados
+                            tp = OracleDAL.GetDataType(dr["DBDATASCALE"].ToString(), dr["DBDATAPRECISION"].ToString(),
+                                                       dr["DBDATATYPE"].ToString(), dr["DBREQUIRED"].ToString());
 
                             sb.AppendLine(@"        /// <summary>");
 
@@ -261,20 +287,28 @@ namespace OracleToPocoClass.DataBase
                             sb.AppendLine(string.Format(@"        /// {0}", comment));
                             sb.AppendLine(@"        /// </summary>");
 
-                            if (dr["DBKEY"].ToString().ToUpper() == "X")
+                            if ((dr["TABLE_PK"] == null) || (dr["TABLE_PK"].ToString().Equals("")))
                             {
-                                sb.AppendLine("        [Key]");
-                                sb.AppendLine("        [DatabaseGenerated(DatabaseGeneratedOption.None)] // None, Computed ou Identity");
+                                if (dr["DBKEY"].ToString().ToUpper() == "X")
+                                {
+                                    sb.AppendLine("        [Key]");
+                                    sb.AppendLine("        [DatabaseGenerated(DatabaseGeneratedOption.None)] // None, Computed ou Identity");
+                                }
+
+                                sb.AppendLine("        [Column(\"" + dr["DBCOLUMN"].ToString() + "\", TypeName=\"" + dr["DBTYPENAME"].ToString() + "\")]");
+                                sb.AppendLine("        public virtual " + tp + " " + StringUtil.ToPascalCase(dr["DBCOLUMN"].ToString()) + " { get; set; }");
+                                sb.AppendLine("");
                             }
-
-                            sb.AppendLine("        [Column(\"" + dr["DBCOLUMN"].ToString() + "\", TypeName=\"" + dr["DBTYPENAME"].ToString() + "\")]");
-                            sb.AppendLine("        public virtual " + tp + " " + StringUtil.ToPascalCase(dr["DBCOLUMN"].ToString()) + " { get; set; }");
-                            sb.AppendLine("");
+                            else
+                            {
+                                sb.AppendLine("        [ForeignKey(" + StringUtil.ToPascalCase(dr["TABLE_PK"].ToString()) + ")]");
+                                sb.AppendLine("        public " + tp + " " + StringUtil.ToPascalCase(dr["DBCOLUMN"].ToString()) + "{ get; set; }");
+                                sb.AppendLine("        public virtual " + StringUtil.ToPascalCase(dr["TABLE_PK"].ToString()) + " " + StringUtil.ToPascalCase(dr["TABLE_PK"].ToString()) + " { get; set; }");
+                                sb.AppendLine("");
+                            }
                         }
-
                         sb.AppendLine("    }");
                         sb.AppendLine("}");
-
                         code = sb.ToString();
                     }
 

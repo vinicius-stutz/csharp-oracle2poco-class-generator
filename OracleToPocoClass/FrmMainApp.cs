@@ -55,8 +55,10 @@ namespace OracleToPocoClass
         {
             if (!CheckError())
             {
+                this.Cursor = Cursors.WaitCursor;
                 GenerateCode();
                 txtCode.Focus();
+                this.Cursor = Cursors.Default;
             }
         }
 
