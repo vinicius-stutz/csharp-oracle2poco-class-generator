@@ -301,8 +301,9 @@ namespace OracleToPocoClass.DataBase
                             }
                             else
                             {
-                                sb.AppendLine("        [ForeignKey(" + StringUtil.ToPascalCase(dr["TABLE_PK"].ToString()) + ")]");
                                 sb.AppendLine("        public " + tp + " " + StringUtil.ToPascalCase(dr["DBCOLUMN"].ToString()) + "{ get; set; }");
+                                sb.AppendLine("");
+                                sb.AppendLine("        [ForeignKey(\"" + StringUtil.ToPascalCase(dr["DBCOLUMN"].ToString()) + "\")]");
                                 sb.AppendLine("        public virtual " + StringUtil.ToPascalCase(dr["TABLE_PK"].ToString()) + " " + StringUtil.ToPascalCase(dr["TABLE_PK"].ToString()) + " { get; set; }");
                                 sb.AppendLine("");
                             }
