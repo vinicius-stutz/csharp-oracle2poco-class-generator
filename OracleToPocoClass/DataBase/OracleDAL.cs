@@ -185,10 +185,10 @@ namespace OracleToPocoClass.DataBase
                             sb.AppendLine("        // TODO: Você pode apagar estas linhas de comentários se desejar (classe " + StringUtil.ToPascalCase(table.ToString()) + ")");
                             sb.AppendLine("        /*");
                             sb.AppendLine("         * ----------------------- EXEMPLOS -----------------------");
-                            //sb.AppendLine("         * Levando em consideração o seguinte cenário:");
-                            //sb.AppendLine("         * - Classe Employee;");
-                            //sb.AppendLine("         * - Classe DepartmentMaster.");
-                            //sb.AppendLine("         * ");
+                            sb.AppendLine("         * Levando em consideração o seguinte cenário:");
+                            sb.AppendLine("         * - Classe Employee;");
+                            sb.AppendLine("         * - Classe DepartmentMaster.");
+                            sb.AppendLine("         * ");
                             //sb.AppendLine("         * --------------------------------------------------------");
                             //sb.AppendLine("         * ");
                             //sb.AppendLine("         * 1) FOREIGN KEY");
@@ -204,7 +204,7 @@ namespace OracleToPocoClass.DataBase
                             //sb.AppendLine("         * ");
                             //sb.AppendLine("         * Fique à vontade para utilizar a solução que melhor atende suas necessidades.");
                             //sb.AppendLine("         * ");
-                            //sb.AppendLine("         * --------------------------------------------------------");
+                            sb.AppendLine("         * --------------------------------------------------------");
                             sb.AppendLine("         * ");
                             sb.AppendLine("         * 2) INVERSE PROPERTY");
                             sb.AppendLine("         * Se na Classe Employee houver:");
@@ -301,7 +301,8 @@ namespace OracleToPocoClass.DataBase
                             }
                             else
                             {
-                                sb.AppendLine("        public " + tp + " " + StringUtil.ToPascalCase(dr["DBCOLUMN"].ToString()) + "{ get; set; }");
+                                sb.AppendLine("        [Column(\"" + dr["DBCOLUMN"].ToString() + "\", TypeName=\"" + dr["DBTYPENAME"].ToString() + "\")]");
+                                sb.AppendLine("        public virtual " + tp + " " + StringUtil.ToPascalCase(dr["DBCOLUMN"].ToString()) + "{ get; set; }");
                                 sb.AppendLine("");
                                 sb.AppendLine("        [ForeignKey(\"" + StringUtil.ToPascalCase(dr["DBCOLUMN"].ToString()) + "\")]");
                                 sb.AppendLine("        public virtual " + StringUtil.ToPascalCase(dr["TABLE_PK"].ToString()) + " " + StringUtil.ToPascalCase(dr["TABLE_PK"].ToString()) + " { get; set; }");
