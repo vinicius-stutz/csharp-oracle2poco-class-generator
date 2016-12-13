@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Oracle To POCO Class")]
+[assembly: AssemblyTitle("Oracle To POCO Class Generator")]
 [assembly: AssemblyDescription("Cria classes POCO oriundas de tabelas do Oracle")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Community Development")]
-[assembly: AssemblyProduct("Oracle To POCO Class")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyProduct("Oracle To POCO Class Generator")]
+[assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

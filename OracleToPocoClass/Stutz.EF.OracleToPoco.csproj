@@ -7,8 +7,8 @@
     <ProjectGuid>{4480553A-C6D7-4C03-AA01-7987D8D1F3D1}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OracleToPocoClass</RootNamespace>
-    <AssemblyName>OracleToPocoClass</AssemblyName>
+    <RootNamespace>Stutz.EF.OracleToPoco</RootNamespace>
+    <AssemblyName>Stutz.EF.OracleToPoco</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -52,7 +52,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>OracleToPocoClass.ico</ApplicationIcon>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>C9DE07458DBB0002973872B4075D8AEBD22459B6</ManifestCertificateThumbprint>
@@ -68,7 +68,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="FastColoredTextBox">
-      <HintPath>C:\Users\rubens.santos\Desktop\Classe poco\csharp.OracleToPocoClassGenerator-master\lib\FastColoredTextBox.dll</HintPath>
+      <HintPath>..\lib\FastColoredTextBox.dll</HintPath>
     </Reference>
     <Reference Include="Oracle.ManagedDataAccess, Version=4.121.2.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
       <HintPath>..\packages\Oracle.ManagedDataAccess.12.1.2400\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
@@ -129,16 +129,19 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="OracleToPocoClass.ico" />
+    <Content Include="favicon.ico" />
     <None Include="res\appbar.question.png" />
     <None Include="res\appbar.arrow.collapsed.png" />
     <None Include="res\appbar.arrow.expand.png" />
     <Content Include="res\appbar.card.png" />
     <Content Include="res\appbar.close.png" />
+    <None Include="res\appbar.code.fff.png" />
     <Content Include="res\appbar.code.xml.png" />
+    <None Include="res\appbar.connect.fff.png" />
     <Content Include="res\appbar.connect.png" />
     <Content Include="res\appbar.database.png" />
     <Content Include="res\appbar.database.sql.png" />
+    <None Include="res\appbar.disconnect.fff.png" />
     <Content Include="res\appbar.disconnect.png" />
     <Content Include="res\appbar.disk.png" />
     <Content Include="res\appbar.framework.net.png" />

@@ -118,55 +118,64 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="appbar_arrow_collapsed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\res\appbar.arrow.collapsed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="appbar_arrow_expand" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\res\appbar.arrow.expand.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="appbar_card" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\res\appbar.card.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="appbar_close" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\res\appbar.close.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="appbar_code_xml" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\res\appbar.code.xml.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="appbar_connect" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\res\appbar.connect.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="appbar_page_copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\res\appbar.page.copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="appbar_database" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\res\appbar.database.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="appbar_database_sql" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\res\appbar.database.sql.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="appbar_disconnect" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\res\appbar.disconnect.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="appbar_disk" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\res\appbar.disk.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="appbar_framework_net" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\res\appbar.framework.net.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="appbar_information_circle" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\res\appbar.information.circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="appbar_arrow_collapsed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\res\appbar.arrow.collapsed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="appbar_interface_textbox" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\res\appbar.interface.textbox.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="appbar_language_csharp" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\res\appbar.language.csharp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="appbar_disconnect" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\res\appbar.disconnect.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="appbar_new" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\res\appbar.new.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="appbar_page_copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\res\appbar.page.copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="appbar_connect" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\res\appbar.connect.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="appbar_card" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\res\appbar.card.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="appbar_framework_net" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\res\appbar.framework.net.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="appbar_close" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\res\appbar.close.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="appbar_database_sql" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\res\appbar.database.sql.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="appbar_information_circle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\res\appbar.information.circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="appbar_question" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\res\appbar.question.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="appbar_code_xml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\res\appbar.code.xml.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="appbar_language_csharp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\res\appbar.language.csharp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="appbar_arrow_expand" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\res\appbar.arrow.expand.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="appbar.code.fff" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\res\appbar.code.fff.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="appbar.connect.fff" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\res\appbar.connect.fff.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="appbar.disconnect.fff" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\res\appbar.disconnect.fff.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

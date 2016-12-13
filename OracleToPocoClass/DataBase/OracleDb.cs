@@ -1,13 +1,21 @@
 ﻿using Oracle.ManagedDataAccess.Client;
-using OracleToPocoClass.Util;
+using Stutz.EF.OracleToPoco.Util;
 using System;
 
-namespace OracleToPocoClass.DataBase
+namespace Stutz.EF.OracleToPoco.DataBase
 {
+    /// <summary>
+    /// <see cref="OracleConnection"/>.
+    /// </summary>
     class OracleDB
     {
         public static OracleConnection conn;
 
+        /// <summary>
+        /// Connects the specified <see cref="XmlData"/>.
+        /// </summary>
+        /// <param name="xd">The xd.</param>
+        /// <exception cref="Exception"></exception>
         public static void Connect(XmlData xd)
         {
             string dataSource = string.Format(
@@ -57,6 +65,9 @@ namespace OracleToPocoClass.DataBase
             }
         }
 
+        /// <summary>
+        /// Closes this instance.
+        /// </summary>
         public static void Close()
         {
             if (conn != null)

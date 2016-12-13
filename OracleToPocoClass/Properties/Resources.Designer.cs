@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace OracleToPocoClass.Properties {
+namespace Stutz.EF.OracleToPoco.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace OracleToPocoClass.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("OracleToPocoClass.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Stutz.EF.OracleToPoco.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -103,6 +103,16 @@ namespace OracleToPocoClass.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap appbar_code_fff {
+            get {
+                object obj = ResourceManager.GetObject("appbar.code.fff", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap appbar_code_xml {
             get {
                 object obj = ResourceManager.GetObject("appbar_code_xml", resourceCulture);
@@ -116,6 +126,16 @@ namespace OracleToPocoClass.Properties {
         internal static System.Drawing.Bitmap appbar_connect {
             get {
                 object obj = ResourceManager.GetObject("appbar_connect", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap appbar_connect_fff {
+            get {
+                object obj = ResourceManager.GetObject("appbar.connect.fff", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -146,6 +166,16 @@ namespace OracleToPocoClass.Properties {
         internal static System.Drawing.Bitmap appbar_disconnect {
             get {
                 object obj = ResourceManager.GetObject("appbar_disconnect", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap appbar_disconnect_fff {
+            get {
+                object obj = ResourceManager.GetObject("appbar.disconnect.fff", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace OracleToPocoClass
+namespace Stutz.EF.OracleToPoco
 {
     static class Program
     {

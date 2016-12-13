@@ -3,14 +3,22 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace OracleToPocoClass.Util
+namespace Stutz.EF.OracleToPoco.Util
 {
+    /// <summary>
+    /// XML file operations.
+    /// </summary>
     public class XmlOperations
     {
         private static StringWriter sw;
 
         static string file = "conn.xml";
 
+        /// <summary>
+        /// Writes the file.
+        /// </summary>
+        /// <param name="xd">The xd.</param>
+        /// <param name="formClose">if set to <c>true</c> [form close].</param>
         public static void WriteFile(XmlData xd, bool formClose = false)
         {
             if (!File.Exists(file))
@@ -24,12 +32,12 @@ namespace OracleToPocoClass.Util
             // Why not "using (StringWriter sw = new StringWriter())"?
             // View CA2202 in https://msdn.microsoft.com/library/ms182334.aspx
             // * Before change:
-            //1 > ------Rebuild All started: Project: OracleToPocoClass, Configuration: Debug Any CPU------
+            //1 > ------Rebuild All started: Project: Stutz.EF.OracleToPoco, Configuration: Debug Any CPU------
             //1 > Running Code Analysis...
             //1 > Code Analysis Complete --0 error(s), 1 warning(s)
             //========== Rebuild All: 1 succeeded, 0 failed, 0 skipped ==========
             // * After change:
-            //1 > ------Rebuild All started: Project: OracleToPocoClass, Configuration: Debug Any CPU------
+            //1 > ------Rebuild All started: Project: Stutz.EF.OracleToPoco, Configuration: Debug Any CPU------
             //1 > Running Code Analysis...
             //1 > Code Analysis Complete --0 error(s), 0 warning(s)
             //========== Rebuild All: 1 succeeded, 0 failed, 0 skipped ==========
@@ -50,6 +58,10 @@ namespace OracleToPocoClass.Util
             }
         }
 
+        /// <summary>
+        /// Reads the file.
+        /// </summary>
+        /// <returns></returns>
         public static XmlData ReadFile()
         {
             XmlData xd = new XmlData();

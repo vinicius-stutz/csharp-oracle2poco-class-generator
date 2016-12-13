@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace OracleToPocoClass.Properties {
+namespace Stutz.EF.OracleToPoco.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

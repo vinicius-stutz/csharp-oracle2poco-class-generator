@@ -1,15 +1,25 @@
 ﻿using Oracle.ManagedDataAccess.Client;
-using OracleToPocoClass.Util;
+using Stutz.EF.OracleToPoco.Util;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
-namespace OracleToPocoClass.DataBase
+namespace Stutz.EF.OracleToPoco.DataBase
 {
+    /// <summary>
+    /// Data Access Layer
+    /// </summary>
     class OracleDAL
     {
-
+        /// <summary>
+        /// Gets the type of the data.
+        /// </summary>
+        /// <param name="DBDATASCALE">The dbdatascale.</param>
+        /// <param name="DBDATAPRECISION">The dbdataprecision.</param>
+        /// <param name="DBDATATYPE">The dbdatatype.</param>
+        /// <param name="DBREQUIRED">The dbrequired.</param>
+        /// <returns><see cref="string"/>.</returns>
         public static string GetDataType(string DBDATASCALE, string DBDATAPRECISION, string DBDATATYPE, string DBREQUIRED)
         {
             string tp = string.Empty;
@@ -63,6 +73,11 @@ namespace OracleToPocoClass.DataBase
         }
 
 
+        /// <summary>
+        /// Gets the tables.
+        /// </summary>
+        /// <returns><see cref="string"/> list.</returns>
+        /// <exception cref="Exception"></exception>
         public static ICollection<string> GetTables()
         {
             string sql = "SELECT TABLE_NAME FROM USER_TABLES ORDER BY TABLE_NAME";
@@ -91,17 +106,25 @@ namespace OracleToPocoClass.DataBase
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
 
+        /// <summary>
+        /// Generates the code.
+        /// </summary>
+        /// <param name="tableSpace">The table space.</param>
+        /// <param name="table">The table.</param>
+        /// <param name="nameSpace">The name space.</param>
+        /// <param name="showLength">if set to <c>true</c> [show length].</param>
+        /// <param name="showComments">if set to <c>true</c> [show comments].</param>
+        /// <returns><see cref="string"/>.</returns>
+        /// <exception cref="Exception"></exception>
         public static string GenerateCode(string tableSpace, string table, string nameSpace, bool showLength, bool showComments)
         {
             string code = null;
             string tp = string.Empty;
-            short prec = 0;
-            short scale = 0;
 
             try
             {
-                string sql =
-                                    @"SELECT DECODE(UCC.COLUMN_NAME, NULL, NULL, 'X') AS DBKEY,
+                string sql = 
+                    @"SELECT DECODE(UCC.COLUMN_NAME, NULL, NULL, 'X') AS DBKEY,
                              TC.COLUMN_NAME AS DBCOLUMN,
                              DECODE(TC.NULLABLE, 'N', 'X', 'Y', NULL) AS DBREQUIRED,
                              {0}
@@ -115,17 +138,17 @@ namespace OracleToPocoClass.DataBase
                              TC.DATA_SCALE AS DBDATASCALE,
                              TC.DATA_LENGTH AS DBDATALENGTH,
                              TABLEFK.TABLE_PK
-                    FROM USER_TAB_COLUMNS TC
-                    LEFT JOIN (SELECT CC.COLUMN_NAME, CC.TABLE_NAME, TR.TABLE_PK 
-                                  FROM ALL_CONS_COLUMNS CC 
-                                    INNER JOIN ALL_TAB_COLUMNS ATC ON CC.TABLE_NAME = ATC.TABLE_NAME AND ATC.COLUMN_NAME = CC.COLUMN_NAME
-                                    INNER JOIN (SELECT C.CONSTRAINT_NAME, C2.TABLE_NAME TABLE_PK
-                                                                FROM ALL_CONSTRAINTS C
-                                                                  INNER JOIN ALL_CONSTRAINTS C2 ON C2.CONSTRAINT_NAME  = C.R_CONSTRAINT_NAME 
-                                                              WHERE C.TABLE_NAME = :P_TABLE 
-                                                                AND C2.status = 'ENABLED'                                
-                                                                AND C.status = 'ENABLED'
-                                                  ) TR ON CC.CONSTRAINT_NAME = TR.CONSTRAINT_NAME) TABLEFK
+                        FROM USER_TAB_COLUMNS TC
+                        LEFT JOIN (SELECT CC.COLUMN_NAME, CC.TABLE_NAME, TR.TABLE_PK 
+                                   FROM ALL_CONS_COLUMNS CC 
+                                  INNER JOIN ALL_TAB_COLUMNS ATC ON CC.TABLE_NAME = ATC.TABLE_NAME AND ATC.COLUMN_NAME = CC.COLUMN_NAME
+                                  INNER JOIN (SELECT C.CONSTRAINT_NAME, C2.TABLE_NAME TABLE_PK
+                                                FROM ALL_CONSTRAINTS C
+                                               INNER JOIN ALL_CONSTRAINTS C2 ON C2.CONSTRAINT_NAME  = C.R_CONSTRAINT_NAME 
+                                               WHERE C.TABLE_NAME = :P_TABLE 
+                                                 AND C2.STATUS = 'ENABLED'                                
+                                                 AND C.STATUS = 'ENABLED') TR
+                         ON CC.CONSTRAINT_NAME = TR.CONSTRAINT_NAME) TABLEFK
                          ON (TC.TABLE_NAME = TABLEFK.TABLE_NAME AND TC.COLUMN_NAME = TABLEFK.COLUMN_NAME)       
                     LEFT JOIN USER_COL_COMMENTS CC ON CC.COLUMN_NAME = TC.COLUMN_NAME AND CC.TABLE_NAME = TC.TABLE_NAME
                     LEFT JOIN USER_CONSTRAINTS UC ON UC.TABLE_NAME = TC.TABLE_NAME AND UC.CONSTRAINT_TYPE = 'P'
@@ -182,87 +205,83 @@ namespace OracleToPocoClass.DataBase
                         if (showComments) // If show comments
                         {
 
-                            sb.AppendLine("        // TODO: Você pode apagar estas linhas de comentários se desejar (classe " + StringUtil.ToPascalCase(table.ToString()) + ")");
+                            sb.AppendLine("        // TODO: The following samples are in PT-BR. You can delete these comment lines if you wish. (" + StringUtil.ToPascalCase(table.ToString()) + " class)");
                             sb.AppendLine("        /*");
                             sb.AppendLine("         * ----------------------- EXEMPLOS -----------------------");
                             sb.AppendLine("         * Levando em consideração o seguinte cenário:");
                             sb.AppendLine("         * - Classe Employee;");
                             sb.AppendLine("         * - Classe DepartmentMaster.");
                             sb.AppendLine("         * ");
-                            //sb.AppendLine("         * --------------------------------------------------------");
-                            //sb.AppendLine("         * ");
-                            //sb.AppendLine("         * 1) FOREIGN KEY");
-                            //sb.AppendLine("         * Se houver chave estrangeira use (na classe Employee):");
-                            //sb.AppendLine("         *      [ForeignKey(\"DepartmentMaster\")]");
-                            //sb.AppendLine("         *      public int DepartmentId { get; set; }");
-                            //sb.AppendLine("         *      public virtual DepartmentMaster DepartmentMaster { get; set; }");
-                            //sb.AppendLine("         *      ");
-                            //sb.AppendLine("         * Já encontrei outros exemplos que utilizam:");
-                            //sb.AppendLine("         *      public int DepartmentId { get; set; }");
-                            //sb.AppendLine("         *      [ForeignKey(\"DepartmentId\")]");
-                            //sb.AppendLine("         *      public DepartmentMaster DepartmentMaster { get; set; }");
-                            //sb.AppendLine("         * ");
-                            //sb.AppendLine("         * Fique à vontade para utilizar a solução que melhor atende suas necessidades.");
-                            //sb.AppendLine("         * ");
+                            sb.AppendLine("         * --------------------------------------------------------");
+                            sb.AppendLine("         * ");
+                            sb.AppendLine("         * 1) FOREIGN KEY");
+                            sb.AppendLine("         *       Se houver chave estrangeira use (na classe Employee):");
+                            sb.AppendLine("         *            [Column(\"DEPARTMENT_ID\", TypeName = \"NUMBER\")];");
+                            sb.AppendLine("         *            public int DepartmentId { get; set; }");
+                            sb.AppendLine("         *            [ForeignKey(\"DepartmentId\")]");
+                            sb.AppendLine("         *            public virtual DepartmentMaster DepartmentMaster { get; set; }");
+                            sb.AppendLine("         *            ");
+                            sb.AppendLine("         *       ");
+                            sb.AppendLine("         *       Fique à vontade para utilizar a solução que melhor atende suas necessidades.");
+                            sb.AppendLine("         * ");
                             sb.AppendLine("         * --------------------------------------------------------");
                             sb.AppendLine("         * ");
                             sb.AppendLine("         * 2) INVERSE PROPERTY");
-                            sb.AppendLine("         * Se na Classe Employee houver:");
-                            sb.AppendLine("         *      [InverseProperty(\"Employees\")]  ");
-                            sb.AppendLine("         *      public DepartmentMaster MyDepartment { get; set; }");
-                            sb.AppendLine("         * Na Classe DepartmentMaster use:");
-                            sb.AppendLine("         *      public ICollection<Employee> Employees { get; set; }");
-                            sb.AppendLine("         *      ");
-                            sb.AppendLine("         * Se sua tabela possui relacionamentos, lembre-se de modificar os campos:");
-                            sb.AppendLine("         * - 1:N) Para public virtual ICollection<NomeDaClasse> Campo { get; set; }");
-                            sb.AppendLine("         * - 1:1) Para public virtual NomeDaClasse Campo { get; set; }");
-                            sb.AppendLine("         * Lembre-se de sempre fazer as devidas referências na outra classe com");
-                            sb.AppendLine("         * [InverseProperty(\"NomeDaOutraPropriedade\")] quando o relacionamento for 1:N!");
+                            sb.AppendLine("         *       Se na Classe Employee houver:");
+                            sb.AppendLine("         *            public virtual DepartmentMaster DepartmentMaster { get; set; }");
+                            sb.AppendLine("         *       Na Classe DepartmentMaster use:");
+                            sb.AppendLine("         *            [InverseProperty(\"DepartmentMaster\")]  ");
+                            sb.AppendLine("         *            public ICollection<Employee> Employees { get; set; }");
+                            sb.AppendLine("         *            ");
+                            sb.AppendLine("         *       Se sua tabela possui relacionamentos, lembre-se de modificar os campos:");
+                            sb.AppendLine("         *       - 1:N) Para public virtual ICollection<NomeDaClasse> Campo { get; set; }");
+                            sb.AppendLine("         *       - 1:1) Para public virtual NomeDaClasse Campo { get; set; }");
+                            sb.AppendLine("         *       Lembre-se de sempre fazer as devidas referências na outra classe com");
+                            sb.AppendLine("         *       [InverseProperty(\"NomeDaOutraPropriedade\")] quando o relacionamento for 1:N!");
                             sb.AppendLine("         * ");
                             sb.AppendLine("         * --------------------------------------------------------");
                             sb.AppendLine("         * ");
                             sb.AppendLine("         * 3) COMPLEXTYPE");
-                            sb.AppendLine("         * Tipos complexos não possuem chave ou Identity, então o Entity Framework");
-                            sb.AppendLine("         * não pode gerenciar estes objetos. Eles podem ser usados como resultado");
-                            sb.AppendLine("         * de uma Stored Procedure.");
-                            sb.AppendLine("         *      [ComplexType]");
-                            sb.AppendLine("         *      public class UserInfo");
-                            sb.AppendLine("         *      {");
-                            sb.AppendLine("         *          public DateTime CreatedDate { get; set; }");
-                            sb.AppendLine("         *          public string CreatedBy { get; set; }");
-                            sb.AppendLine("         *      }");
-                            sb.AppendLine("         * ");
-                            sb.AppendLine("         *      [Table(\"Department\", Schema = \"dbo\")]");
-                            sb.AppendLine("         *      public class DepartmentMaster");
-                            sb.AppendLine("         *      {");
-                            sb.AppendLine("         *          [Key]");
-                            sb.AppendLine("         *          public int DepartmentId { get; set; }");
-                            sb.AppendLine("         *          public UserInfo User { get; set; }");
-                            sb.AppendLine("         *      }");
-                            sb.AppendLine("         * ");
+                            sb.AppendLine("         *       Tipos complexos não possuem chave ou Identity, então o Entity Framework");
+                            sb.AppendLine("         *       não pode gerenciar estes objetos. Eles podem ser usados como resultado");
+                            sb.AppendLine("         *       de uma Stored Procedure.");
+                            sb.AppendLine("         *            [ComplexType]");
+                            sb.AppendLine("         *            public class UserInfo");
+                            sb.AppendLine("         *            {");
+                            sb.AppendLine("         *                public DateTime CreatedDate { get; set; }");
+                            sb.AppendLine("         *                public string CreatedBy { get; set; }");
+                            sb.AppendLine("         *            }");
+                            sb.AppendLine("         *       ");
+                            sb.AppendLine("         *            [Table(\"Department\", Schema = \"dbo\")]");
+                            sb.AppendLine("         *            public class DepartmentMaster");
+                            sb.AppendLine("         *            {");
+                            sb.AppendLine("         *                [Key]");
+                            sb.AppendLine("         *                public int DepartmentId { get; set; }");
+                            sb.AppendLine("         *                public UserInfo User { get; set; }");
+                            sb.AppendLine("         *            }");
+                            sb.AppendLine("         *       ");
                             sb.AppendLine("         * --------------------------------------------------------");
                             sb.AppendLine("         * ");
                             sb.AppendLine("         * 4) NOTMAPPED");
-                            sb.AppendLine("         * Atributos (ou classes) não mapeados para o EF.");
-                            sb.AppendLine("         *      [NotMapped]");
-                            sb.AppendLine("         *      public string DepartmentCodeName");
-                            sb.AppendLine("         *      {");
-                            sb.AppendLine("         *          get { return Code + \": \" + Name; }");
-                            sb.AppendLine("         *      }");
-                            sb.AppendLine("         *      ");
-                            sb.AppendLine("         *      [NotMapped]");
-                            sb.AppendLine("         *      public class InternalClass");
-                            sb.AppendLine("         *      {");
-                            sb.AppendLine("         *          public int Id { get; set; }");
-                            sb.AppendLine("         *          public string Name { get; set; }");
-                            sb.AppendLine("         *      }");
-                            sb.AppendLine("         * ");
+                            sb.AppendLine("         *       Atributos (ou classes) não mapeados para o EF.");
+                            sb.AppendLine("         *            [NotMapped]");
+                            sb.AppendLine("         *            public string DepartmentCodeName");
+                            sb.AppendLine("         *            {");
+                            sb.AppendLine("         *                get { return Code + \": \" + Name; }");
+                            sb.AppendLine("         *            }");
+                            sb.AppendLine("         *            ");
+                            sb.AppendLine("         *            [NotMapped]");
+                            sb.AppendLine("         *            public class InternalClass");
+                            sb.AppendLine("         *            {");
+                            sb.AppendLine("         *                public int Id { get; set; }");
+                            sb.AppendLine("         *                public string Name { get; set; }");
+                            sb.AppendLine("         *            }");
+                            sb.AppendLine("         *       ");
                             sb.AppendLine("         * --------------------------------------------------------");
                             sb.AppendLine("         * ");
                             sb.AppendLine("         * REFERÊNCIAS:");
-                            sb.AppendLine("         * http://www.c-sharpcorner.com/UploadFile/ff2f08/entity-framework-code-first-data-annotations/");
+                            sb.AppendLine("         * http://www.entityframeworktutorial.net/code-first/entity-framework-code-first.aspx");
                             sb.AppendLine("         * http://www.asp.net/mvc/overview/getting-started/getting-started-with-ef-using-mvc/creating-a-more-complex-data-model-for-an-asp-net-mvc-application");
-                            sb.AppendLine("         * http://www.entityframeworktutorial.net/code-first/foreignkey-dataannotations-attribute-in-code-first.aspx");
                             sb.AppendLine("         * https://docs.oracle.com/cd/E11882_01/win.112/e23174/featLINQ.htm#ODPNT219");
                             sb.AppendLine("         * https://docs.oracle.com/cd/E56485_01/win.121/e55744/entityCodeFirst.htm#ODPNT8309");
                             sb.AppendLine("         * ");

@@ -1,6 +1,7 @@
-﻿using OracleToPocoClass.DataBase;
-using OracleToPocoClass.Properties;
-using OracleToPocoClass.Util;
+﻿using FastColoredTextBoxNS;
+using Stutz.EF.OracleToPoco.DataBase;
+using Stutz.EF.OracleToPoco.Properties;
+using Stutz.EF.OracleToPoco.Util;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -8,8 +9,12 @@ using System.Net;
 using System.Text;
 using System.Windows.Forms;
 
-namespace OracleToPocoClass
+namespace Stutz.EF.OracleToPoco
 {
+    /// <summary>
+    /// Main class.
+    /// </summary>
+    /// <seealso cref="System.Windows.Forms.Form" />
     public partial class FrmMainApp : Form
     {
         private XmlData xd;
@@ -19,6 +24,9 @@ namespace OracleToPocoClass
         private int x, y, w, h;
 
         #region Form Events
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FrmMainApp"/> class.
+        /// </summary>
         public FrmMainApp()
         {
             InitializeComponent();
@@ -32,16 +40,51 @@ namespace OracleToPocoClass
 
             if (xd != null) AssignData();
 
-            AddCredits(); // Credit to the author (optional)
+            gbConexao.Paint += PaintBorderlessGroupBox;
+            gbExibir.Paint += PaintBorderlessGroupBox;
+
+            txtCode.SyntaxHighlighter = new SyntaxHighlighter()
+            {
+                AttributeStyle = new TextStyle(Brushes.White, null, FontStyle.Regular),
+                AttributeValueStyle = new TextStyle(Brushes.White, null, FontStyle.Regular),
+                ClassNameStyle = new TextStyle(Brushes.LightSeaGreen, null, FontStyle.Regular),
+                CommentStyle = new TextStyle(Brushes.ForestGreen, null, FontStyle.Italic),
+                CommentTagStyle = new TextStyle(Brushes.ForestGreen, null, FontStyle.Italic),
+                FunctionsStyle = new TextStyle(Brushes.SteelBlue, null, FontStyle.Regular),
+                KeywordStyle = new TextStyle(Brushes.SteelBlue, null, FontStyle.Regular),
+                NumberStyle = new TextStyle(Brushes.LightYellow, null, FontStyle.Regular),
+                StringStyle = new TextStyle(Brushes.SandyBrown, null, FontStyle.Regular)
+            };
+
+            // Credit to the author (optional)
+            AddCredits();
         }
 
+        /// <summary>
+        /// Paints the borderless group box.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="p">The <see cref="PaintEventArgs"/> instance containing the event data.</param>
+        private void PaintBorderlessGroupBox(object sender, PaintEventArgs p)
+        {
+            GroupBox box = (GroupBox)sender;
+            p.Graphics.Clear(Color.Gray);
+            p.Graphics.DrawString(box.Text, box.Font, Brushes.Black, 0, 0);
+        }
+
+        /// <summary>
+        /// Called when [connect click].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void OnConnectClick(object sender, EventArgs e)
         {
             if (!CheckError())
             {
                 img = btnConnect.Image;
-                btnConnect.Image = new Bitmap(Resources.appbar_disconnect);
-                btnConnect.Text = "...";
+                // If you want to add an image to the button
+                // btnConnect.Image = new Bitmap(Resources.appbar_disconnect);
+                btnConnect.Text = "Conectando...";
                 btnConnect.Enabled = false;
                 txtTablespace.Text = txtUser.Text;
 
@@ -51,17 +94,27 @@ namespace OracleToPocoClass
             }
         }
 
+        /// <summary>
+        /// Called when [generate click].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void OnGenerateClick(object sender, EventArgs e)
         {
             if (!CheckError())
             {
-                this.Cursor = Cursors.WaitCursor;
+                Cursor = Cursors.WaitCursor;
                 GenerateCode();
                 txtCode.Focus();
-                this.Cursor = Cursors.Default;
+                Cursor = Cursors.Default;
             }
         }
 
+        /// <summary>
+        /// Called when [copy click].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void OnCopyClick(object sender, EventArgs e)
         {
             txtCode.SelectAll();
@@ -70,6 +123,11 @@ namespace OracleToPocoClass
             Alert(TpAlert.success, "O código foi copiado para a sua área de transferência");
         }
 
+        /// <summary>
+        /// Called when [save click].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void OnSaveClick(object sender, EventArgs e)
         {
             saveFileDialog.FileName = StringUtil.ToPascalCase(cmbTables.Text.ToString()) + ".cs";
@@ -86,18 +144,29 @@ namespace OracleToPocoClass
             else { Alert(TpAlert.error, "Por favor, informe o nome do arquivo!"); }
         }
 
+        /// <summary>
+        /// Called when [expand click].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void OnExpandClick(object sender, EventArgs e)
         {
-            if (txtCode.Location.X == 260) // Expand
+            if (txtCode.Location.X == 239) // Expand
             {
                 Point p = new Point(0, y);
                 txtCode.Location = p;
 
-                Size s = new Size(1132, h);
+                Size s = new Size(1132, 585);
                 txtCode.Size = s;
 
                 btnAmpliarEditor.Text = "&Reduzir editor";
                 btnAmpliarEditor.Image = new Bitmap(Resources.appbar_arrow_collapsed);
+
+                msMenu.BackColor = txtCode.BackColor;
+                msMenu.ForeColor = txtCode.ForeColor;
+                msMenu.Size = new Size(185, 23);
+                msMenu.Location = new Point(920, 0);
+
             }
             else // Collapsed
             {
@@ -109,13 +178,33 @@ namespace OracleToPocoClass
 
                 btnAmpliarEditor.Text = "&Ampliar editor";
                 btnAmpliarEditor.Image = new Bitmap(Resources.appbar_arrow_expand);
+
+                msMenu.BackColor = BackColor;
+                msMenu.ForeColor = ForeColor;
+                msMenu.Size = new Size(236, 23);
+                msMenu.Location = new Point(0, 0);
             }
         }
 
+        /// <summary>
+        /// Called when [select click].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void OnSelectClick(object sender, EventArgs e) { txtCode.SelectAll(); }
 
+        /// <summary>
+        /// Called when [clear click].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void OnClearClick(object sender, EventArgs e) { txtCode.Text = string.Empty; }
 
+        /// <summary>
+        /// Called when [about click].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void OnSobreClick(object sender, EventArgs e)
         {
             StringBuilder sb = new StringBuilder();
@@ -137,12 +226,22 @@ namespace OracleToPocoClass
             MessageBox.Show(sb.ToString(), "Sobre", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        /// <summary>
+        /// Called when [close click].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void OnCloseClick(object sender, EventArgs e)
         {
             this.Close();
             Application.Exit();
         }
 
+        /// <summary>
+        /// Called when [tool tip draw].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="DrawToolTipEventArgs"/> instance containing the event data.</param>
         private void OnToolTipDraw(object sender, DrawToolTipEventArgs e)
         {
             e.DrawBackground();
@@ -150,6 +249,11 @@ namespace OracleToPocoClass
             e.DrawText();
         }
 
+        /// <summary>
+        /// Called when [form closing].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="FormClosingEventArgs"/> instance containing the event data.</param>
         private void OnFormClosing(object sender, FormClosingEventArgs e)
         {
             OracleDB.Close();
@@ -160,10 +264,25 @@ namespace OracleToPocoClass
         // ---------------------------------------------------------------------------------------------
 
         #region Background Worker
+        /// <summary>
+        /// Does the work.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="DoWorkEventArgs"/> instance containing the event data.</param>
         private void DoWork(object sender, DoWorkEventArgs e) { Connect(); }
 
+        /// <summary>
+        /// Progresses the changed.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="ProgressChangedEventArgs"/> instance containing the event data.</param>
         void ProgressChanged(object sender, ProgressChangedEventArgs e) { }
 
+        /// <summary>
+        /// Runs the worker completed.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="RunWorkerCompletedEventArgs"/> instance containing the event data.</param>
         void RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             cmbTables.Enabled = true;
@@ -184,6 +303,10 @@ namespace OracleToPocoClass
         // ---------------------------------------------------------------------------------------------
 
         #region Auxiliary Methods
+        /// <summary>
+        /// Checks the error.
+        /// </summary>
+        /// <returns></returns>
         private bool CheckError()
         {
             bool erro = false;
@@ -217,6 +340,10 @@ namespace OracleToPocoClass
             return erro;
         }
 
+        /// <summary>
+        /// Checks the ip.
+        /// </summary>
+        /// <returns></returns>
         private bool CheckIp()
         {
             IPAddress ipVal;
@@ -225,6 +352,9 @@ namespace OracleToPocoClass
             return IPAddress.TryParse(ip, out ipVal);
         }
 
+        /// <summary>
+        /// Connects this instance.
+        /// </summary>
         private void Connect()
         {
             try { OracleDB.Connect(xd); }
@@ -232,23 +362,38 @@ namespace OracleToPocoClass
             { MessageBox.Show(ex.Message, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
         }
 
+        /// <summary>
+        /// Assigns the data.
+        /// </summary>
         private void AssignData()
         {
-            string[] ip = xd.Host.Split('.');
+            string[] ip = new string[] { };
 
-            txtIp1.Text = ip[0];
-            txtIp2.Text = ip[1];
-            txtIp3.Text = ip[2];
-            txtIp4.Text = ip[3];
-            txtNameSpace.Text = xd.NameSpace;
-            txtPort.Text = xd.Port1;
-            txtPort2.Text = xd.Port2;
-            txtPass.Text = xd.Pass;
-            txtService.Text = xd.Service;
-            txtTablespace.Text = xd.TableSpace;
-            txtUser.Text = xd.Uid;
+            if (xd != null)
+            {
+                if (xd.Host != null)
+                {
+                    ip = xd.Host.Split('.');
+
+                    txtIp1.Text = ip[0];
+                    txtIp2.Text = ip[1];
+                    txtIp3.Text = ip[2];
+                    txtIp4.Text = ip[3];
+                }
+
+                txtNameSpace.Text = xd.NameSpace;
+                txtPort.Text = xd.Port1;
+                txtPort2.Text = xd.Port2;
+                txtPass.Text = xd.Pass;
+                txtService.Text = xd.Service;
+                txtTablespace.Text = xd.TableSpace;
+                txtUser.Text = xd.Uid;
+            }
         }
 
+        /// <summary>
+        /// Saves the XML data.
+        /// </summary>
         private void SaveXmlData()
         {
             CheckIp();
@@ -267,12 +412,18 @@ namespace OracleToPocoClass
             XmlOperations.WriteFile(xd, true);
         }
 
+        /// <summary>
+        /// Fills the combo.
+        /// </summary>
         private void FillCombo()
         {
             try { cmbTables.DataSource = OracleDAL.GetTables(); }
             catch (Exception ex) { Alert(TpAlert.error, ex.Message); }
         }
 
+        /// <summary>
+        /// Generates the code.
+        /// </summary>
         private void GenerateCode()
         {
             try
@@ -284,6 +435,9 @@ namespace OracleToPocoClass
             catch (Exception ex) { Alert(TpAlert.error, ex.Message); }
         }
 
+        /// <summary>
+        /// Type of alert in screen.
+        /// </summary>
         private enum TpAlert
         {
             success,
@@ -291,6 +445,11 @@ namespace OracleToPocoClass
             info
         }
 
+        /// <summary>
+        /// Alerts the specified tp.
+        /// </summary>
+        /// <param name="tp">The tp.</param>
+        /// <param name="msg">The MSG.</param>
         private void Alert(TpAlert tp, string msg)
         {
             pnlMsg.Visible = true;
@@ -304,14 +463,25 @@ namespace OracleToPocoClass
             timer.Start();
         }
 
+        /// <summary>
+        /// Controls the message panel.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ControlMsgPnl(object sender, EventArgs e)
         {
             pnlMsg.Visible = false;
             timer.Stop();
         }
 
+        /// <summary>
+        /// Adds the credits to the author (optional).
+        /// </summary>
         private void AddCredits()
         {
+            // The code below is commented.
+            // If you want to give credits to the author, just uncomment the code ;)
+
             //StringBuilder sb = new StringBuilder();
             //sb.AppendLine("/*************************************************************************************");
             //sb.AppendLine("");
