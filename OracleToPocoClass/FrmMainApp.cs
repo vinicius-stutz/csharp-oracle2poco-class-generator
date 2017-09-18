@@ -1,14 +1,19 @@
-﻿using FastColoredTextBoxNS;
-using Stutz.EF.OracleToPoco.Util;
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Net;
-using System.Text;
-using System.Windows.Forms;
+﻿// <copyright file="FrmMainApp.cs" company="Vinicius de Araujo Stutz">
+// Copyright (c) Vinicius de Araujo Stutz. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
 
 namespace Stutz.EF.OracleToPoco
 {
+    using System;
+    using System.ComponentModel;
+    using System.Drawing;
+    using System.Net;
+    using System.Text;
+    using System.Windows.Forms;
+    using FastColoredTextBoxNS;
+    using Stutz.EF.OracleToPoco.Util;
+
     /// <summary>
     /// Main class.
     /// </summary>
@@ -16,11 +21,10 @@ namespace Stutz.EF.OracleToPoco
     /// <seealso cref="System.Windows.Forms.Form" />
     public partial class FrmMainApp : Controller
     {
-        internal Timer _timer;
-        private XmlData _xd;
-        private static string _ip;
-
         private const string AppTitle = "Oracle Database EF Tool: POCO Class Generator";
+
+        private static string _ip;
+        private XmlData _xd;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FrmMainApp"/> class.
@@ -43,16 +47,27 @@ namespace Stutz.EF.OracleToPoco
                 NumberStyle = new TextStyle(Brushes.LightYellow, null, FontStyle.Regular),
                 StringStyle = new TextStyle(Brushes.SandyBrown, null, FontStyle.Regular)
             };
-            
+
             _xd = XmlOperations.ReadFile();
 
-            if (_xd != null) AssignData();
+            if (_xd != null)
+            {
+                AssignData();
+            }
 
             DraggItens();
 
             // Credit to the author (optional)
             AddCredits();
         }
+
+        /// <summary>
+        /// Gets or sets the timer.
+        /// </summary>
+        /// <value>
+        /// The timer.
+        /// </value>
+        internal Timer Timer { get; set; }
 
         /// <summary>
         /// Called when [FRM main application resize].
@@ -65,18 +80,26 @@ namespace Stutz.EF.OracleToPoco
             {
                 if (Size.Width > 0 && Size.Height > 0)
                 {
-                    if (Size.Width < 964) Size = new Size(964, Size.Height);
-                    if (Size.Height < 770) Size = new Size(Size.Width, 770);
+                    if (Size.Width < 964)
+                    {
+                        Size = new Size(964, Size.Height);
+                    }
+
+                    if (Size.Height < 770)
+                    {
+                        Size = new Size(Size.Width, 770);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                Alert(TpAlert.error, ex.Message);
+                Alert(TpAlert.Error, ex.Message);
                 Size = new Size(964, 770);
             }
         }
 
         #region Menu Events
+
         /// <summary>
         /// Called when [copy click].
         /// </summary>
@@ -87,7 +110,7 @@ namespace Stutz.EF.OracleToPoco
             txtCode.SelectAll();
             txtCode.Copy();
 
-            Alert(TpAlert.success, "O código foi copiado para a sua área de transferência");
+            Alert(TpAlert.Success, "O código foi copiado para a sua área de transferência");
         }
 
         /// <summary>
@@ -99,19 +122,25 @@ namespace Stutz.EF.OracleToPoco
         {
             saveFileDialog.FileName = StringUtil.ToPascalCase(_xd.TableName);
 
-            if (ckBll.Checked) saveFileDialog.FileName += "BLL";
+            if (ckBll.Checked)
+            {
+                saveFileDialog.FileName += "BLL";
+            }
 
             DialogResult result = saveFileDialog.ShowDialog();
 
-            if (saveFileDialog.FileName != "")
+            if (saveFileDialog.FileName != string.Empty)
             {
                 if (result == DialogResult.OK)
                 {
                     txtCode.SaveToFile(saveFileDialog.FileName, Encoding.UTF8);
-                    Alert(TpAlert.success, string.Format("O arquivo {0} foi salvo com sucesso no padrão UTF-8", saveFileDialog.FileName + ".cs"));
+                    Alert(TpAlert.Success, string.Format("O arquivo {0} foi salvo com sucesso no padrão UTF-8", saveFileDialog.FileName + ".cs"));
                 }
             }
-            else { Alert(TpAlert.error, "Por favor, informe o nome do arquivo!"); }
+            else
+            {
+                Alert(TpAlert.Error, "Por favor, informe o nome do arquivo!");
+            }
         }
 
         /// <summary>
@@ -119,49 +148,70 @@ namespace Stutz.EF.OracleToPoco
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void OnSelectClick(object sender, EventArgs e) { txtCode.SelectAll(); }
+        private void OnSelectClick(object sender, EventArgs e)
+        {
+            txtCode.SelectAll();
+        }
 
         /// <summary>
         /// Called when [clear click].
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void OnClearClick(object sender, EventArgs e) { txtCode.Text = string.Empty; }
+        private void OnClearClick(object sender, EventArgs e)
+        {
+            txtCode.Text = string.Empty;
+        }
 
         /// <summary>
         /// Called when [close click].
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void OnCloseClick(object sender, EventArgs e) { Close(); }
+        private void OnCloseClick(object sender, EventArgs e)
+        {
+            Close();
+        }
 
         /// <summary>
         /// Called when [show hide connection click].
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void OnShowHideConnectionClick(object sender, EventArgs e) { ShowHideMenuItem(pnlConexao, menuShowHideControls); }
+        private void OnShowHideConnectionClick(object sender, EventArgs e)
+        {
+            ShowHideMenuItem(pnlConexao, menuShowHideControls);
+        }
 
         /// <summary>
         /// Called when [show hide tables click].
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void OnShowHideTablesClick(object sender, EventArgs e) { ShowHideMenuItem(pnlTables, menuShowHideTables); }
-        
+        private void OnShowHideTablesClick(object sender, EventArgs e)
+        {
+            ShowHideMenuItem(pnlTables, menuShowHideTables);
+        }
+
         /// <summary>
         /// Called when [show hide namespace click].
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void OnShowHideNamespaceClick(object sender, EventArgs e) { ShowHideMenuItem(pnlNamespace, menuShowHideNamespace); }
-        
+        private void OnShowHideNamespaceClick(object sender, EventArgs e)
+        {
+            ShowHideMenuItem(pnlNamespace, menuShowHideNamespace);
+        }
+
         /// <summary>
         /// Called when [show hide opcoes click].
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void OnShowHideOptionsClick(object sender, EventArgs e) { ShowHideMenuItem(pnlOpcoes, menuShowHideOpcoes); }
+        private void OnShowHideOptionsClick(object sender, EventArgs e)
+        {
+            ShowHideMenuItem(pnlOpcoes, menuShowHideOpcoes);
+        }
 
         /// <summary>
         /// Show or hide panel by menu item.
@@ -204,26 +254,27 @@ namespace Stutz.EF.OracleToPoco
         private void OnSobreClick(object sender, EventArgs e)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("");
+            sb.AppendLine(string.Empty);
             sb.AppendLine("    Oracle To POCO Class Generator (EF tool)");
             sb.AppendLine("    Copyright (C) 2016 Vinícius Stutz.");
-            sb.AppendLine("");
+            sb.AppendLine(string.Empty);
             sb.AppendLine("    This program is provided to you under the terms of the The MIT");
             sb.AppendLine("    License(MIT) as published at https://opensource.org/licenses/MIT");
-            sb.AppendLine("");
+            sb.AppendLine(string.Empty);
             sb.AppendLine("    For more features, controls, and support, please check the");
             sb.AppendLine("    website http://www.vinicius-stutz.com/");
-            sb.AppendLine("");
+            sb.AppendLine(string.Empty);
             sb.AppendLine("    Stay informed: follow @vinicius_stutz on Twitter or");
             sb.AppendLine("    Like http://facebook.com/vinicius.stutz");
-            sb.AppendLine("");
-            sb.AppendLine("");
+            sb.AppendLine(string.Empty);
+            sb.AppendLine(string.Empty);
 
             MessageBox.Show(sb.ToString(), "Sobre", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         #endregion
 
         #region Controles
+
         /// <summary>
         /// Draggs the itens.
         /// </summary>
@@ -284,7 +335,7 @@ namespace Stutz.EF.OracleToPoco
         {
             if (!CheckError())
             {
-                //_img = btnConnect.Image;
+                // _img = btnConnect.Image;
                 // If you want to add an image to the button
                 // btnConnect.Image = new Bitmap(Resources.appbar_disconnect);
                 btnConnect.Text = "CONECTANDO...";
@@ -317,39 +368,43 @@ namespace Stutz.EF.OracleToPoco
         #endregion
 
         #region Validations
+
         /// <summary>
         /// Checks the error.
         /// </summary>
-        /// <returns></returns>
+        /// <returns><see cref="bool"/></returns>
         private bool CheckError()
         {
             bool erro = false;
 
             if (string.IsNullOrEmpty(txtIp1.Text))
             {
-                Alert(TpAlert.error, "Informe o Data Source");
+                Alert(TpAlert.Error, "Informe o Data Source");
                 txtIp1.Focus();
                 erro = true;
             }
             else if (string.IsNullOrEmpty(txtPass.Text))
             {
-                Alert(TpAlert.error, "Informe a Senha");
+                Alert(TpAlert.Error, "Informe a Senha");
                 txtPass.Focus();
                 erro = true;
             }
             else if (string.IsNullOrEmpty(txtUser.Text))
             {
-                Alert(TpAlert.error, "Informe o Usuário");
+                Alert(TpAlert.Error, "Informe o Usuário");
                 txtUser.Focus();
                 erro = true;
             }
             else if (!CheckIp(txtIp1.Text, txtIp2.Text, txtIp3.Text, txtIp4.Text))
             {
-                Alert(TpAlert.error, "Endereço de UP inválido");
+                Alert(TpAlert.Error, "Endereço de UP inválido");
                 txtIp1.Focus();
                 erro = true;
             }
-            else { erro = false; }
+            else
+            {
+                erro = false;
+            }
 
             return erro;
         }
@@ -357,7 +412,13 @@ namespace Stutz.EF.OracleToPoco
         /// <summary>
         /// Checks the ip.
         /// </summary>
-        /// <returns></returns>
+        /// <param name="ip1">The ip1.</param>
+        /// <param name="ip2">The ip2.</param>
+        /// <param name="ip3">The ip3.</param>
+        /// <param name="ip4">The ip4.</param>
+        /// <returns>
+        ///   <see cref="bool" />
+        /// </returns>
         private bool CheckIp(string ip1, string ip2, string ip3, string ip4)
         {
             IPAddress ipVal;
@@ -369,26 +430,32 @@ namespace Stutz.EF.OracleToPoco
         #endregion
 
         #region Background Worker
+
         /// <summary>
         /// Does the work.
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="DoWorkEventArgs"/> instance containing the event data.</param>
-        private void DoWork(object sender, DoWorkEventArgs e) { Connect(); }
+        private void DoWork(object sender, DoWorkEventArgs e)
+        {
+            Connect();
+        }
 
         /// <summary>
         /// Progresses the changed.
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="ProgressChangedEventArgs"/> instance containing the event data.</param>
-        void ProgressChanged(object sender, ProgressChangedEventArgs e) { }
+        private void ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+        }
 
         /// <summary>
         /// Runs the worker completed.
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="RunWorkerCompletedEventArgs"/> instance containing the event data.</param>
-        void RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             string conInfo = txtUser.Text.ToLower() + "@" + txtService.Text.ToUpper();
 
@@ -406,21 +473,27 @@ namespace Stutz.EF.OracleToPoco
             btnConnect.Enabled = true;
 
             lblStatusConexao.Text = "Conectado a " + conInfo;
-            this.Text = conInfo + " - " + AppTitle;
+            Text = conInfo + " - " + AppTitle;
 
             FillCombo();
         }
         #endregion
 
         #region Auxiliary Methods
+
         /// <summary>
         /// Connects this instance.
         /// </summary>
         private void Connect()
         {
-            try { Helper.Connect(_xd); }
+            try
+            {
+                Helper.Connect(_xd);
+            }
             catch (Exception ex)
-            { MessageBox.Show(ex.Message, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
+            {
+                MessageBox.Show(ex.Message, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         /// <summary>
@@ -474,8 +547,7 @@ namespace Stutz.EF.OracleToPoco
                 txtNamespaceEntidade.Text,
                 txtNamespacePersistencia.Text,
                 txtNamespaceUtil.Text,
-                txtNamespaceBll.Text
-            );
+                txtNamespaceBll.Text);
 
             XmlOperations.WriteFile(_xd, true);
         }
@@ -510,8 +582,14 @@ namespace Stutz.EF.OracleToPoco
         /// </summary>
         private void FillCombo()
         {
-            try { cmbTables.DataSource = Helper.Tables; }
-            catch (Exception ex) { Alert(TpAlert.error, ex.Message); }
+            try
+            {
+                cmbTables.DataSource = Helper.Tables;
+            }
+            catch (Exception ex)
+            {
+                Alert(TpAlert.Error, ex.Message);
+            }
         }
 
         /// <summary>
@@ -524,15 +602,23 @@ namespace Stutz.EF.OracleToPoco
                 _xd.TableName = cmbTables.Text;
 
                 if (ckEntity.Checked)
+                {
                     txtCode.Text = Helper.GetCode(txtTablespace.Text, _xd.TableName, txtNamespaceEntidade.Text, cbDataLength.Checked, cbComments.Checked);
+                }
                 else
+                {
                     txtCode.Text = Helper.GetCode(txtNamespaceEntidade.Text, txtNamespacePersistencia.Text, txtNamespaceUtil.Text, txtNamespaceBll.Text, StringUtil.ToPascalCase(_xd.TableName));
+                }
             }
-            catch (Exception ex) { Alert(TpAlert.error, ex.Message); }
+            catch (Exception ex)
+            {
+                Alert(TpAlert.Error, ex.Message);
+            }
         }
         #endregion
 
         #region Alert
+
         /// <summary>
         /// Alerts the specified tp.
         /// </summary>
@@ -541,14 +627,14 @@ namespace Stutz.EF.OracleToPoco
         private void Alert(TpAlert tp, string msg)
         {
             pnlMsg.Visible = true;
-            pnlMsg.BackColor = (tp == TpAlert.error) ? Color.Tomato : (tp == TpAlert.info) ? Color.LightBlue : Color.PaleGreen;
-            pnlMsg.ForeColor = (tp == TpAlert.error) ? Color.DarkRed : (tp == TpAlert.info) ? Color.MidnightBlue : Color.DarkGreen;
+            pnlMsg.BackColor = (tp == TpAlert.Error) ? Color.Tomato : (tp == TpAlert.Info) ? Color.LightBlue : Color.PaleGreen;
+            pnlMsg.ForeColor = (tp == TpAlert.Error) ? Color.DarkRed : (tp == TpAlert.Info) ? Color.MidnightBlue : Color.DarkGreen;
             lblMsg.Text = msg;
 
-            _timer = new Timer();
-            _timer.Interval = 3000;
-            _timer.Tick += new EventHandler(ControlMsgPnl);
-            _timer.Start();
+            Timer = new Timer();
+            Timer.Interval = 3000;
+            Timer.Tick += new EventHandler(ControlMsgPnl);
+            Timer.Start();
         }
 
         /// <summary>
@@ -559,7 +645,7 @@ namespace Stutz.EF.OracleToPoco
         private void ControlMsgPnl(object sender, EventArgs e)
         {
             pnlMsg.Visible = false;
-            _timer.Stop();
+            Timer.Stop();
         }
         #endregion
     }

@@ -1,11 +1,16 @@
-﻿using System.Globalization;
+﻿// <copyright file="StringUtil.cs" company="Vinicius de Araujo Stutz">
+// Copyright (c) Vinicius de Araujo Stutz. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
 
 namespace Stutz.EF.OracleToPoco.Util
 {
+    using System.Globalization;
+
     /// <summary>
-    /// <see cref="string"/> util.
+    /// <see cref="string"/> utils class.
     /// </summary>
-    class StringUtil
+    internal class StringUtil
     {
         /// <summary>
         /// To the pascal case.
@@ -16,15 +21,13 @@ namespace Stutz.EF.OracleToPoco.Util
         {
             val = val
                 .ToLower()
-                .Replace("_", " ")
-            ;
+                .Replace("_", " ");
 
             TextInfo pascal = new CultureInfo("en-US", false).TextInfo;
 
             return pascal
                 .ToTitleCase(val)
-                .Replace(" ", "")
-            ;
+                .Replace(" ", string.Empty);
         }
     }
 }

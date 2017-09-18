@@ -1,29 +1,42 @@
-﻿using Oracle.ManagedDataAccess.Client;
-using Stutz.EF.OracleToPoco.Util;
-using System;
+﻿// <copyright file="OracleDB.cs" company="Vinicius de Araujo Stutz">
+// Copyright (c) Vinicius de Araujo Stutz. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
 
 namespace Stutz.EF.OracleToPoco.DataBase
 {
+    using System;
+    using Oracle.ManagedDataAccess.Client;
+    using Util;
+
     /// <summary>
     /// <see cref="OracleConnection"/>.
     /// </summary>
-    class OracleDB
+    internal class OracleDB
     {
-        public static OracleConnection _conn;
+        /// <summary>
+        /// Gets or sets the connection.
+        /// </summary>
+        /// <value>
+        /// The connection.
+        /// </value>
+        public static OracleConnection Conn
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Connects the specified <see cref="XmlData"/>.
         /// </summary>
         /// <param name="xd">The xd.</param>
-        /// <exception cref="Exception"></exception>
+        /// <exception cref="Exception">Error.</exception>
         public static void Connect(XmlData xd)
         {
             string dataSource = string.Format(
                 "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={0})(PORT={1}))(CONNECT_DATA=(SERVICE_NAME={2})))",
                 xd.Host,
                 xd.Port1,
-                xd.Service)
-            ;
+                xd.Service);
 
             try
             {
@@ -34,9 +47,9 @@ namespace Stutz.EF.OracleToPoco.DataBase
                     DataSource = dataSource
                 };
 
-                _conn = new OracleConnection(ocsb.ConnectionString);
+                Conn = new OracleConnection(ocsb.ConnectionString);
 
-                _conn.Open();
+                Conn.Open();
             }
             catch (Exception)
             {
@@ -57,11 +70,14 @@ namespace Stutz.EF.OracleToPoco.DataBase
                         DataSource = dataSource
                     };
 
-                    _conn = new OracleConnection(ocsb.ConnectionString);
+                    Conn = new OracleConnection(ocsb.ConnectionString);
 
-                    _conn.Open();
+                    Conn.Open();
                 }
-                catch (Exception ex) { throw new Exception(ex.Message); }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
             }
         }
 
@@ -70,10 +86,10 @@ namespace Stutz.EF.OracleToPoco.DataBase
         /// </summary>
         public static void Close()
         {
-            if (_conn != null)
+            if (Conn != null)
             {
-                _conn.Close();
-                _conn.Dispose();
+                Conn.Close();
+                Conn.Dispose();
             }
         }
     }

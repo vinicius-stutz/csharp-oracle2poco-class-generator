@@ -1,17 +1,65 @@
-﻿using Oracle.ManagedDataAccess.Client;
-using Stutz.EF.OracleToPoco.Util;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
+﻿// <copyright file="OracleDAL.cs" company="Vinicius de Araujo Stutz">
+// Copyright (c) Vinicius de Araujo Stutz. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
 
 namespace Stutz.EF.OracleToPoco.DataBase
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Text;
+    using Oracle.ManagedDataAccess.Client;
+    using Util;
+
     /// <summary>
     /// Data Access Layer
     /// </summary>
-    class OracleDAL
+    internal class OracleDAL
     {
+        /// <summary>
+        /// Gets the tables.
+        /// </summary>
+        /// <returns><see cref="ICollection{String}"/>.</returns>
+        /// <exception cref="Exception">Error.</exception>
+        public static ICollection<string> Tables
+        {
+            get
+            {
+                string sql = "SELECT TABLE_NAME FROM USER_TABLES ORDER BY TABLE_NAME";
+
+                ICollection<string> list = new List<string>();
+
+                try
+                {
+                    using (OracleCommand cmd = new OracleCommand(sql, OracleDB.Conn))
+                    {
+#if DEBUG
+                        Debug.WriteLine(cmd.CommandText);
+#endif
+
+                        OracleDataReader dr = cmd.ExecuteReader();
+
+                        if ((dr != null) && dr.Read())
+                        {
+                            while (dr.Read())
+                            {
+                                list.Add(dr["TABLE_NAME"].ToString());
+                            }
+                        }
+
+                        dr.Dispose();
+
+                        return list;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+        }
+
         /// <summary>
         /// Gets the type of the data.
         /// </summary>
@@ -27,87 +75,165 @@ namespace Stutz.EF.OracleToPoco.DataBase
             short scale = 0;
 
             if (dbDataPrecision != null)
+            {
                 if (!string.IsNullOrEmpty(dbDataPrecision))
+                {
                     prec = Convert.ToInt16(dbDataPrecision);
+                }
+            }
 
             if (dbDataScale != null)
+            {
                 if (!string.IsNullOrEmpty(dbDataScale))
-                    scale = Convert.ToInt16((dbDataScale));
+                {
+                    scale = Convert.ToInt16(dbDataScale);
+                }
+            }
 
             switch (dbDataType)
             {
                 case "NUMBER":
-                    if (prec == 0) tp = "decimal";
-                    else if (prec <= 3) tp = "byte";
-                    else if (prec <= 5) tp = "short";
-                    else if (prec <= 10) tp = "int";
-                    else if ((prec <= 19) && (scale == 0)) tp = "long";
-                    else if ((prec <= 18) && (scale <= 2)) tp = "decimal";
-                    if (dbRequired != "X") tp += "?";
-                    break;
-                case "BLOB": tp = "byte[]"; break;
-                case "BINARY_FLOAT":
-                    tp = "single";
-                    if (dbRequired != "X") tp += "?";
-                    break;
-                case "BINARY_DOUBLE":
-                    tp = "double";
-                    if (dbRequired != "X") tp += "?";
-                    break;
-                case "RAW": tp = "Guid"; break;
-                case "DATE":
-                    tp = "DateTime";
-                    if (dbRequired != "X") tp += "?";
-                    break;
-                case "NCLOB": tp = "String"; break;
-                case "CLOB": tp = "String"; break;
-                case "NVARCHAR2": tp = "string"; break;
-                case "VARCHAR2": tp = "string"; break;
-                case "NCHAR": tp = "string"; break;
-                case "CHAR": tp = "string"; break;
-                case "LONG": tp = "string"; break;
-                case "ROWID": tp = "string"; break;
-                case "UROWID": tp = "string"; break;
-                default: tp = "object"; break;
-            }
-            return tp;
-        }
-
-
-        /// <summary>
-        /// Gets the tables.
-        /// </summary>
-        /// <returns><see cref="string"/> list.</returns>
-        /// <exception cref="Exception"></exception>
-        public static ICollection<string> Tables
-        {
-            get
-            {
-                string sql = "SELECT TABLE_NAME FROM USER_TABLES ORDER BY TABLE_NAME";
-
-                ICollection<string> list = new List<string>();
-
-                try
-                {
-                    using (OracleCommand cmd = new OracleCommand(sql, OracleDB._conn))
                     {
-#if DEBUG
-                        Debug.WriteLine(cmd.CommandText);
-#endif
+                        if (prec == 0)
+                        {
+                            tp = "decimal";
+                        }
+                        else if (prec <= 3)
+                        {
+                            tp = "byte";
+                        }
+                        else if (prec <= 5)
+                        {
+                            tp = "short";
+                        }
+                        else if (prec <= 10)
+                        {
+                            tp = "int";
+                        }
+                        else if ((prec <= 19) && (scale == 0))
+                        {
+                            tp = "long";
+                        }
+                        else if ((prec <= 18) && (scale <= 2))
+                        {
+                            tp = "decimal";
+                        }
 
-                        OracleDataReader dr = cmd.ExecuteReader();
+                        if (dbRequired != "X")
+                        {
+                            tp += "?";
+                        }
 
-                        if ((dr != null) && (dr.Read()))
-                            while (dr.Read())
-                                list.Add(dr["TABLE_NAME"].ToString());
-
-                        dr.Dispose();
-
-                        return list;
+                        break;
                     }
-                }
-                catch (Exception ex) { throw new Exception(ex.Message); }
+
+                case "BLOB":
+                    {
+                        tp = "byte[]";
+                        break;
+                    }
+
+                case "BINARY_FLOAT":
+                    {
+                        tp = "single";
+                        if (dbRequired != "X")
+                        {
+                            tp += "?";
+                        }
+
+                        break;
+                    }
+
+                case "BINARY_DOUBLE":
+                    {
+                        tp = "double";
+                        if (dbRequired != "X")
+                        {
+                            tp += "?";
+                        }
+
+                        break;
+                    }
+
+                case "RAW":
+                    {
+                        tp = "Guid";
+                        break;
+                    }
+
+                case "DATE":
+                    {
+                        tp = "DateTime";
+                        if (dbRequired != "X")
+                        {
+                            tp += "?";
+                        }
+
+                        break;
+                    }
+
+                case "NCLOB":
+                    {
+                        tp = "String";
+                        break;
+                    }
+
+                case "CLOB":
+                    {
+                        tp = "String";
+                        break;
+                    }
+
+                case "NVARCHAR2":
+                    {
+                        tp = "string";
+                        break;
+                    }
+
+                case "VARCHAR2":
+                    {
+                        tp = "string";
+                        break;
+                    }
+
+                case "NCHAR":
+                    {
+                        tp = "string";
+                        break;
+                    }
+
+                case "CHAR":
+                    {
+                        tp = "string";
+                        break;
+                    }
+
+                case "LONG":
+                    {
+                        tp = "string";
+                        break;
+                    }
+
+                case "ROWID":
+                    {
+                        tp = "string";
+                        break;
+                    }
+
+                case "UROWID":
+                    {
+                        tp = "string";
+                        break;
+                    }
+
+                default:
+                    {
+                        tp = "object";
+                        break;
+                    }
             }
+
+            return tp;
         }
 
         /// <summary>
@@ -119,7 +245,7 @@ namespace Stutz.EF.OracleToPoco.DataBase
         /// <param name="showLength">if set to <c>true</c> [show length].</param>
         /// <param name="showComments">if set to <c>true</c> [show comments].</param>
         /// <returns><see cref="string"/>.</returns>
-        /// <exception cref="Exception"></exception>
+        /// <exception cref="Exception">Error.</exception>
         public static string GenerateCode(string tableSpace, string table, string nameSpace, bool showLength, bool showComments)
         {
             string code = null;
@@ -127,7 +253,7 @@ namespace Stutz.EF.OracleToPoco.DataBase
 
             try
             {
-                string sql = 
+                string sql =
                     @"SELECT DECODE(UCC.COLUMN_NAME, NULL, NULL, 'X') AS DBKEY,
                              TC.COLUMN_NAME AS DBCOLUMN,
                              DECODE(TC.NULLABLE, 'N', 'X', 'Y', NULL) AS DBREQUIRED,
@@ -161,19 +287,26 @@ namespace Stutz.EF.OracleToPoco.DataBase
                    ORDER BY DBKEY ASC, DBCOLUMN ASC
                 ";
 
-                if (showLength) // If show DBTYPENAME with DATA_PRECISION, DATA_SCALE and/or DATA_LENGTH
+                // If show DBTYPENAME with DATA_PRECISION, DATA_SCALE and/or DATA_LENGTH
+                if (showLength)
                 {
-                    sql = string.Format(sql,
+                    string caseWhenSql =
                         @"TC.DATA_TYPE || CASE
-                                  WHEN TC.DATA_TYPE = 'NUMBER' AND TC.DATA_PRECISION IS NOT NULL THEN '(' || TC.DATA_PRECISION || ',' || TC.DATA_SCALE || ')'
-                                  WHEN TC.DATA_TYPE LIKE '%CHAR%' THEN '(' || TC.DATA_LENGTH || ')'
-                                  ELSE NULL
-                                   END AS DBTYPENAME,"
-                        );
-                }
-                else { sql = string.Format(sql, "TC.DATA_TYPE AS DBTYPENAME,"); }
+                             WHEN TC.DATA_TYPE = 'NUMBER' AND TC.DATA_PRECISION IS NOT NULL THEN
+                              '(' || TC.DATA_PRECISION || ',' || TC.DATA_SCALE || ')'
+                             WHEN TC.DATA_TYPE LIKE '%CHAR%' THEN
+                              '(' || TC.DATA_LENGTH || ')'
+                             ELSE NULL
+                          END AS DBTYPENAME,";
 
-                using (OracleCommand cmd = new OracleCommand(sql, OracleDB._conn))
+                    sql = string.Format(sql, caseWhenSql);
+                }
+                else
+                {
+                    sql = string.Format(sql, "TC.DATA_TYPE AS DBTYPENAME,");
+                }
+
+                using (OracleCommand cmd = new OracleCommand(sql, OracleDB.Conn))
                 {
                     cmd.Parameters.Add("P_TABLE", table);
 
@@ -183,7 +316,7 @@ namespace Stutz.EF.OracleToPoco.DataBase
 
                     OracleDataReader dr = cmd.ExecuteReader();
 
-                    if ((dr != null))
+                    if (dr != null)
                     {
                         StringBuilder sb = new StringBuilder();
                         sb.AppendLine(string.Format("namespace {0}", nameSpace));
@@ -192,7 +325,7 @@ namespace Stutz.EF.OracleToPoco.DataBase
                         sb.AppendLine("    using System.Collections.Generic;");
                         sb.AppendLine("    using System.ComponentModel.DataAnnotations;");
                         sb.AppendLine("    using System.ComponentModel.DataAnnotations.Schema;");
-                        sb.AppendLine("");
+                        sb.AppendLine(string.Empty);
                         sb.AppendLine(@"    /// <summary>");
                         sb.AppendLine(string.Format(@"    /// Classe gerada automaticamente a partir da tabela {0}.{1} em {2}", tableSpace.ToUpper(), table.ToUpper(), DateTime.Now.ToString()));
                         sb.AppendLine(@"    /// </summary>");
@@ -204,11 +337,11 @@ namespace Stutz.EF.OracleToPoco.DataBase
                         sb.AppendLine("        {");
                         sb.AppendLine(@"                // Seu construtor aqui");
                         sb.AppendLine("        }");
-                        sb.AppendLine("");
+                        sb.AppendLine(string.Empty);
 
-                        if (showComments) // If show comments
+                        // If show comments
+                        if (showComments)
                         {
-
                             sb.AppendLine("        // TODO: The following samples are in PT-BR. You can delete these comment lines if you wish. (" + StringUtil.ToPascalCase(table.ToString()) + " class)");
                             sb.AppendLine("        /*");
                             sb.AppendLine("         * ----------------------- EXEMPLOS -----------------------");
@@ -292,12 +425,12 @@ namespace Stutz.EF.OracleToPoco.DataBase
                             sb.AppendLine("         * ------------------------- FIM -------------------------");
                             sb.AppendLine("         */");
 
-                            sb.AppendLine("");
+                            sb.AppendLine(string.Empty);
                         }
 
                         while (dr.Read())
                         {
-                            //Obtendo o tipo de dados
+                            // Obtendo o tipo de dados
                             tp = GetDataType(dr["DBDATASCALE"].ToString(), dr["DBDATAPRECISION"].ToString(), dr["DBDATATYPE"].ToString(), dr["DBREQUIRED"].ToString());
 
                             sb.AppendLine(@"        /// <summary>");
@@ -309,7 +442,7 @@ namespace Stutz.EF.OracleToPoco.DataBase
                             sb.AppendLine(string.Format(@"        /// {0}", comment));
                             sb.AppendLine(@"        /// </summary>");
 
-                            if ((dr["TABLE_PK"] == null) || (dr["TABLE_PK"].ToString().Equals("")))
+                            if ((dr["TABLE_PK"] == null) || dr["TABLE_PK"].ToString().Equals(string.Empty))
                             {
                                 if (dr["DBKEY"].ToString().ToUpper() == "X")
                                 {
@@ -319,18 +452,19 @@ namespace Stutz.EF.OracleToPoco.DataBase
 
                                 sb.AppendLine("        [Column(\"" + dr["DBCOLUMN"].ToString() + "\", TypeName=\"" + dr["DBTYPENAME"].ToString() + "\")]");
                                 sb.AppendLine("        public virtual " + tp + " " + StringUtil.ToPascalCase(dr["DBCOLUMN"].ToString()) + " { get; set; }");
-                                sb.AppendLine("");
+                                sb.AppendLine(string.Empty);
                             }
                             else
                             {
                                 sb.AppendLine("        [Column(\"" + dr["DBCOLUMN"].ToString() + "\", TypeName=\"" + dr["DBTYPENAME"].ToString() + "\")]");
                                 sb.AppendLine("        public virtual " + tp + " " + StringUtil.ToPascalCase(dr["DBCOLUMN"].ToString()) + "{ get; set; }");
-                                sb.AppendLine("");
+                                sb.AppendLine(string.Empty);
                                 sb.AppendLine("        [ForeignKey(\"" + StringUtil.ToPascalCase(dr["DBCOLUMN"].ToString()) + "\")]");
                                 sb.AppendLine("        public virtual " + StringUtil.ToPascalCase(dr["TABLE_PK"].ToString()) + " " + StringUtil.ToPascalCase(dr["TABLE_PK"].ToString()) + " { get; set; }");
-                                sb.AppendLine("");
+                                sb.AppendLine(string.Empty);
                             }
                         }
+
                         sb.AppendLine("    }");
                         sb.AppendLine("}");
                         code = sb.ToString();
@@ -341,7 +475,10 @@ namespace Stutz.EF.OracleToPoco.DataBase
                     return code;
                 }
             }
-            catch (Exception ex) { throw new Exception(ex.Message); }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

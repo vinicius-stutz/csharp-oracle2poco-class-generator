@@ -1,10 +1,111 @@
-﻿namespace Stutz.EF.OracleToPoco.Util
+﻿// <copyright file="XmlData.cs" company="Vinicius de Araujo Stutz">
+// Copyright (c) Vinicius de Araujo Stutz. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+namespace Stutz.EF.OracleToPoco.Util
 {
     /// <summary>
     /// XML Data.
     /// </summary>
     public class XmlData
     {
+        /// <summary>
+        /// Gets or sets the uid.
+        /// </summary>
+        /// <value>
+        /// The uid.
+        /// </value>
+        public string Uid { get; set; }
+
+        /// <summary>
+        /// Gets or sets the pass.
+        /// </summary>
+        /// <value>
+        /// The pass.
+        /// </value>
+        public string Pass { get; set; }
+
+        /// <summary>
+        /// Gets or sets the host.
+        /// </summary>
+        /// <value>
+        /// The host.
+        /// </value>
+        public string Host { get; set; }
+
+        /// <summary>
+        /// Gets or sets the port1.
+        /// </summary>
+        /// <value>
+        /// The port1.
+        /// </value>
+        public string Port1 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the port2.
+        /// </summary>
+        /// <value>
+        /// The port2.
+        /// </value>
+        public string Port2 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the service.
+        /// </summary>
+        /// <value>
+        /// The service.
+        /// </value>
+        public string Service { get; set; }
+
+        /// <summary>
+        /// Gets or sets the table space.
+        /// </summary>
+        /// <value>
+        /// The table space.
+        /// </value>
+        public string TableSpace { get; set; }
+
+        /// <summary>
+        /// Gets or sets the namespace entidade.
+        /// </summary>
+        /// <value>
+        /// The namespace entidade.
+        /// </value>
+        public string NamespaceEntidade { get; set; }
+
+        /// <summary>
+        /// Gets or sets the namespace persistencia.
+        /// </summary>
+        /// <value>
+        /// The namespace persistencia.
+        /// </value>
+        public string NamespacePersistencia { get; set; }
+
+        /// <summary>
+        /// Gets or sets the namespace utility.
+        /// </summary>
+        /// <value>
+        /// The namespace utility.
+        /// </value>
+        public string NamespaceUtil { get; set; }
+
+        /// <summary>
+        /// Gets or sets the namespace BLL.
+        /// </summary>
+        /// <value>
+        /// The namespace BLL.
+        /// </value>
+        public string NamespaceBll { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the table.
+        /// </summary>
+        /// <value>
+        /// The name of the table.
+        /// </value>
+        public string TableName { get; set; }
+
         /// <summary>
         /// Sets the specified u.
         /// </summary>
@@ -23,7 +124,7 @@
         {
             Uid = u;
             Pass = p;
-            Host = h.Replace(" ", "");
+            Host = h.Replace(" ", string.Empty);
             Port1 = p1;
             Port2 = p2;
             Service = s;
@@ -33,18 +134,5 @@
             NamespacePersistencia = namespacePersistencia;
             NamespaceUtil = namespaceUtil;
         }
-
-        public string Uid { get; set; }
-        public string Pass { get; set; }
-        public string Host { get; set; }
-        public string Port1 { get; set; }
-        public string Port2 { get; set; }
-        public string Service { get; set; }
-        public string TableSpace { get; set; }
-        public string NamespaceEntidade { get; set; }
-        public string NamespacePersistencia { get; set; }
-        public string NamespaceUtil { get; set; }
-        public string NamespaceBll { get; set; }
-        public string TableName { get; set; }
     }
 }
