@@ -9,7 +9,7 @@ namespace Stutz.EF.OracleToPoco.DataBase
     /// </summary>
     class OracleDB
     {
-        public static OracleConnection conn;
+        public static OracleConnection _conn;
 
         /// <summary>
         /// Connects the specified <see cref="XmlData"/>.
@@ -34,9 +34,9 @@ namespace Stutz.EF.OracleToPoco.DataBase
                     DataSource = dataSource
                 };
 
-                conn = new OracleConnection(ocsb.ConnectionString);
+                _conn = new OracleConnection(ocsb.ConnectionString);
 
-                conn.Open();
+                _conn.Open();
             }
             catch (Exception)
             {
@@ -57,9 +57,9 @@ namespace Stutz.EF.OracleToPoco.DataBase
                         DataSource = dataSource
                     };
 
-                    conn = new OracleConnection(ocsb.ConnectionString);
+                    _conn = new OracleConnection(ocsb.ConnectionString);
 
-                    conn.Open();
+                    _conn.Open();
                 }
                 catch (Exception ex) { throw new Exception(ex.Message); }
             }
@@ -70,10 +70,10 @@ namespace Stutz.EF.OracleToPoco.DataBase
         /// </summary>
         public static void Close()
         {
-            if (conn != null)
+            if (_conn != null)
             {
-                conn.Close();
-                conn.Dispose();
+                _conn.Close();
+                _conn.Dispose();
             }
         }
     }

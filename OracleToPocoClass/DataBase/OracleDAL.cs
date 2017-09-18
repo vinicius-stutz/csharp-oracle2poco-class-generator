@@ -15,48 +15,49 @@ namespace Stutz.EF.OracleToPoco.DataBase
         /// <summary>
         /// Gets the type of the data.
         /// </summary>
-        /// <param name="DBDATASCALE">The dbdatascale.</param>
-        /// <param name="DBDATAPRECISION">The dbdataprecision.</param>
-        /// <param name="DBDATATYPE">The dbdatatype.</param>
-        /// <param name="DBREQUIRED">The dbrequired.</param>
+        /// <param name="dbDataScale">The dbdatascale.</param>
+        /// <param name="dbDataPrecision">The dbdataprecision.</param>
+        /// <param name="dbDataType">The dbdatatype.</param>
+        /// <param name="dbRequired">The dbrequired.</param>
         /// <returns><see cref="string"/>.</returns>
-        public static string GetDataType(string DBDATASCALE, string DBDATAPRECISION, string DBDATATYPE, string DBREQUIRED)
+        public static string GetDataType(string dbDataScale, string dbDataPrecision, string dbDataType, string dbRequired)
         {
             string tp = string.Empty;
             short prec = 0;
             short scale = 0;
 
-            if (DBDATAPRECISION != null)
-                if (!string.IsNullOrEmpty(DBDATAPRECISION))
-                    prec = Convert.ToInt16(DBDATAPRECISION);
+            if (dbDataPrecision != null)
+                if (!string.IsNullOrEmpty(dbDataPrecision))
+                    prec = Convert.ToInt16(dbDataPrecision);
 
-            if (DBDATASCALE != null)
-                if (!string.IsNullOrEmpty(DBDATASCALE))
-                    scale = Convert.ToInt16((DBDATASCALE));
+            if (dbDataScale != null)
+                if (!string.IsNullOrEmpty(dbDataScale))
+                    scale = Convert.ToInt16((dbDataScale));
 
-            switch (DBDATATYPE)
+            switch (dbDataType)
             {
                 case "NUMBER":
-                    if (prec <= 3) tp = "byte";
+                    if (prec == 0) tp = "decimal";
+                    else if (prec <= 3) tp = "byte";
                     else if (prec <= 5) tp = "short";
                     else if (prec <= 10) tp = "int";
                     else if ((prec <= 19) && (scale == 0)) tp = "long";
                     else if ((prec <= 18) && (scale <= 2)) tp = "decimal";
-                    if (DBREQUIRED != "X") tp += "?";
+                    if (dbRequired != "X") tp += "?";
                     break;
                 case "BLOB": tp = "byte[]"; break;
                 case "BINARY_FLOAT":
                     tp = "single";
-                    if (DBREQUIRED != "X") tp += "?";
+                    if (dbRequired != "X") tp += "?";
                     break;
                 case "BINARY_DOUBLE":
                     tp = "double";
-                    if (DBREQUIRED != "X") tp += "?";
+                    if (dbRequired != "X") tp += "?";
                     break;
                 case "RAW": tp = "Guid"; break;
                 case "DATE":
                     tp = "DateTime";
-                    if (DBREQUIRED != "X") tp += "?";
+                    if (dbRequired != "X") tp += "?";
                     break;
                 case "NCLOB": tp = "String"; break;
                 case "CLOB": tp = "String"; break;
@@ -78,32 +79,35 @@ namespace Stutz.EF.OracleToPoco.DataBase
         /// </summary>
         /// <returns><see cref="string"/> list.</returns>
         /// <exception cref="Exception"></exception>
-        public static ICollection<string> GetTables()
+        public static ICollection<string> Tables
         {
-            string sql = "SELECT TABLE_NAME FROM USER_TABLES ORDER BY TABLE_NAME";
-
-            ICollection<string> list = new List<string>();
-
-            try
+            get
             {
-                using (OracleCommand cmd = new OracleCommand(sql, OracleDB.conn))
+                string sql = "SELECT TABLE_NAME FROM USER_TABLES ORDER BY TABLE_NAME";
+
+                ICollection<string> list = new List<string>();
+
+                try
                 {
+                    using (OracleCommand cmd = new OracleCommand(sql, OracleDB._conn))
+                    {
 #if DEBUG
-                    Debug.WriteLine(cmd.CommandText);
+                        Debug.WriteLine(cmd.CommandText);
 #endif
 
-                    OracleDataReader dr = cmd.ExecuteReader();
+                        OracleDataReader dr = cmd.ExecuteReader();
 
-                    if ((dr != null) && (dr.Read()))
-                        while (dr.Read())
-                            list.Add(dr["TABLE_NAME"].ToString());
+                        if ((dr != null) && (dr.Read()))
+                            while (dr.Read())
+                                list.Add(dr["TABLE_NAME"].ToString());
 
-                    dr.Dispose();
+                        dr.Dispose();
 
-                    return list;
+                        return list;
+                    }
                 }
+                catch (Exception ex) { throw new Exception(ex.Message); }
             }
-            catch (Exception ex) { throw new Exception(ex.Message); }
         }
 
         /// <summary>
@@ -169,7 +173,7 @@ namespace Stutz.EF.OracleToPoco.DataBase
                 }
                 else { sql = string.Format(sql, "TC.DATA_TYPE AS DBTYPENAME,"); }
 
-                using (OracleCommand cmd = new OracleCommand(sql, OracleDB.conn))
+                using (OracleCommand cmd = new OracleCommand(sql, OracleDB._conn))
                 {
                     cmd.Parameters.Add("P_TABLE", table);
 
@@ -182,13 +186,13 @@ namespace Stutz.EF.OracleToPoco.DataBase
                     if ((dr != null))
                     {
                         StringBuilder sb = new StringBuilder();
-                        sb.AppendLine("using System;");
-                        sb.AppendLine("using System.Collections.Generic;");
-                        sb.AppendLine("using System.ComponentModel.DataAnnotations;");
-                        sb.AppendLine("using System.ComponentModel.DataAnnotations.Schema;");
-                        sb.AppendLine("");
                         sb.AppendLine(string.Format("namespace {0}", nameSpace));
                         sb.AppendLine("{");
+                        sb.AppendLine("    using System;");
+                        sb.AppendLine("    using System.Collections.Generic;");
+                        sb.AppendLine("    using System.ComponentModel.DataAnnotations;");
+                        sb.AppendLine("    using System.ComponentModel.DataAnnotations.Schema;");
+                        sb.AppendLine("");
                         sb.AppendLine(@"    /// <summary>");
                         sb.AppendLine(string.Format(@"    /// Classe gerada automaticamente a partir da tabela {0}.{1} em {2}", tableSpace.ToUpper(), table.ToUpper(), DateTime.Now.ToString()));
                         sb.AppendLine(@"    /// </summary>");
@@ -294,8 +298,7 @@ namespace Stutz.EF.OracleToPoco.DataBase
                         while (dr.Read())
                         {
                             //Obtendo o tipo de dados
-                            tp = OracleDAL.GetDataType(dr["DBDATASCALE"].ToString(), dr["DBDATAPRECISION"].ToString(),
-                                                       dr["DBDATATYPE"].ToString(), dr["DBREQUIRED"].ToString());
+                            tp = GetDataType(dr["DBDATASCALE"].ToString(), dr["DBDATAPRECISION"].ToString(), dr["DBDATATYPE"].ToString(), dr["DBREQUIRED"].ToString());
 
                             sb.AppendLine(@"        /// <summary>");
 

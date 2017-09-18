@@ -12,7 +12,7 @@ namespace Stutz.EF.OracleToPoco.Util
     {
         private static StringWriter sw;
 
-        static string file = "conn.xml";
+        static string file = "oracle_ef_tool.config";
 
         /// <summary>
         /// Writes the file.

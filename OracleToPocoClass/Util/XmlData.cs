@@ -15,17 +15,23 @@
         /// <param name="p2">The Port2.</param>
         /// <param name="s">The Service.</param>
         /// <param name="ts">The TableSpace.</param>
-        /// <param name="ns">The NameSpace.</param>
-        public void Set(string u, string p, string h, string p1, string p2, string s, string ts, string ns)
+        /// <param name="namespaceEntidade">The NameSpace.</param>
+        /// <param name="namespacePersistencia">The namespace persistencia.</param>
+        /// <param name="namespaceUtil">The namespace utility.</param>
+        /// <param name="nameSpaceBll">The name space BLL.</param>
+        public void Set(string u, string p, string h, string p1, string p2, string s, string ts, string namespaceEntidade, string namespacePersistencia, string namespaceUtil, string nameSpaceBll)
         {
-            this.Uid = u;
-            this.Pass = p;
-            this.Host = h.Replace(" ", "");
-            this.Port1 = p1;
-            this.Port2 = p2;
-            this.Service = s;
-            this.TableSpace = ts;
-            this.NameSpace = ns;
+            Uid = u;
+            Pass = p;
+            Host = h.Replace(" ", "");
+            Port1 = p1;
+            Port2 = p2;
+            Service = s;
+            TableSpace = ts;
+            NamespaceEntidade = namespaceEntidade;
+            NamespaceBll = nameSpaceBll;
+            NamespacePersistencia = namespacePersistencia;
+            NamespaceUtil = namespaceUtil;
         }
 
         public string Uid { get; set; }
@@ -35,6 +41,10 @@
         public string Port2 { get; set; }
         public string Service { get; set; }
         public string TableSpace { get; set; }
-        public string NameSpace { get; set; }
+        public string NamespaceEntidade { get; set; }
+        public string NamespacePersistencia { get; set; }
+        public string NamespaceUtil { get; set; }
+        public string NamespaceBll { get; set; }
+        public string TableName { get; set; }
     }
 }
